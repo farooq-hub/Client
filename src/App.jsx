@@ -5,6 +5,7 @@ import AdminRoute from "./Routes/Admin";
 import './App.css'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ProviderRoute from './Routes/Provider';
 
 function App() {
 
@@ -14,13 +15,13 @@ function App() {
 
       <Routes>
 
+        <Route path='/provider/*' element={<ProviderRoute/>}/>
         <Route path='/admin/*' element={<AdminRoute/>}/>
         <Route path='/*' element={<UserRoute />}/>
 
       </Routes>
       <ToastContainer
         // position="top-left"
-        // autoClose={2000}
         autoClose={500}
         limit={1}
         // hideProgressBar

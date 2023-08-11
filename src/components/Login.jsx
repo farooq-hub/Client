@@ -1,12 +1,23 @@
 import { useState } from 'react';
-import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { MdPhoneIphone,MdLockOutline} from 'react-icons/md';
 import axiosInstance from '../api/axios';
+import { userLogin } from '../store/slice/user';
+import { adminLogin } from '../store/slice/admin'
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import {  toast } from 'react-toastify';
+import PropTypes from 'prop-types';
 
-function Login({url,roal}) {
+Login.propTypes = {
+    role: PropTypes.string.isRequired, // Define the expected type and mark it as required
+    url: PropTypes.string.isRequired, // Define the expected type and mark it as required
+  };
 
+function Login({role,url}) {
+
+    const navigate = useNavigate()
+    const dispatch = useDispatch();
     const [error, setError] = useState('')
     const [formData, setFormData] = useState({
         phone: '',
@@ -18,7 +29,6 @@ function Login({url,roal}) {
     const errorHandle = () => {
     const {  phone, password } = formData;
     const pattern = /^[6789]\d{9}$/;
-    console.log('kjjj',pattern.test(phone));
     if(phone.trim().length == 0 || password.trim().length == 0){
         setError('Fill all the fields')
         return false
@@ -49,24 +59,23 @@ function Login({url,roal}) {
         e.preventDefault();
         if (formValid) {
            try {
-              const response = await axiosInstance.post(`/${url}`, formData);
+              const response = await axiosInstance.post(url, formData);
               if (response.status === 200) {
   
-                 const name = response?.data?.name;
-                 const token = response?.data?.token;
-                 const role = response?.data?.role;
-                 console.log(role, name, token);
-                //  if (role === 'user') {
-                //     dispatch(userLogin({ name, token, role, id }));
-                //     navigate('/')
-                //  } else if (role === 'admin') {
-  
-                //     dispatch(adminLogin({ name, token, role }));
-                //     navigate('/admin')
+                const name = response?.data?.name;
+                const token = response?.data?.token;
+                const role = response?.data?.role;
+                console.log(role, name, token);
+                if (role === 'user') {
+                    dispatch(userLogin({ name, token, role}));
+                    navigate('/')
+                } else if (role === 'admin') {
+                    dispatch(adminLogin({ name, token, role}));
+                    navigate('/admin')
                 //  } else if (role === 'provider') {
                 //     dispatch(providerLogin({ name, token, role, id }));
                 //     navigate('/provider')
-                //  }
+                }
               }
            } catch (error) {
               
@@ -92,7 +101,7 @@ function Login({url,roal}) {
             <form action="" className='max-w-[400px] mx-auto w-full  p-8  rounded-lg m-8' onSubmit={handleSubmit}>
                 {/* <h1 className='text-center text-5xl text-red-950 font-serif border shadow-slate-600'>LOGO</h1> */}
                 {/* <h1 className="  font-bold text-2xl  text-red-950 font-serif">LOGO</h1> */}
-                <h1 className=" text-center font-bold text-5xl pb-4 pt-2 text-gray-950 font-serif">Sing In</h1>
+                <h1 className=" text-center font-bold text-5xl pb-4 pt-2 text-gray-950 font-serif">Sign In</h1>
 
                 <p className="text-center text-sm font-normal text-gray-600 pb-20 ">Welcome Back...</p>
 
@@ -105,30 +114,30 @@ function Login({url,roal}) {
                     <input className="pl-2 outline-none border-none h-8 bg-slate-100" type="password" name="password"  placeholder="Password" onChange={handleChange}/>
                 </div>
                 <p className='text-center text-sm text-red-600'>{error}</p>
-                <div className='flex justify-between mb-4'>
-                    {/* <p className='flex items-center'><input className='mr-2' type="checkbox" />rememmber me</p> */}
-
-                    <p className='font-semibold text-gray-500 hover:underline'> <Link className="lo-sign" to="/signup">Login with OTP</Link></p>
-                    <p className='font-semibold text-gray-500 hover:underline'> <Link className="lo-sign" to="/signup">Forgot password?</Link></p>
-
-                </div>
-                <div className='flex justify-center'>
+                {
+                    role !== 'admin' ?
+                        <div className='flex justify-between mb-4'>
+                            <p className='font-semibold text-gray-500 hover:underline'> <Link className="lo-sign" to="/signup">Login with OTP</Link></p>
+                            <p className='font-semibold text-gray-500 hover:underline'> <Link className="lo-sign" to="/signup">Forgot password?</Link></p>
+                        </div>
+                        : null
+                }
+                <div  className={`${role=='admin'?'flex justify-center mt-6' :'flex justify-center'}`}>
                     <button className='border-none rounded-full my-5 w-44 h-12 transition duration-300 text-white font-bold bg-black py-2 hover:bg-gray-400'>Login</button>
                 </div>
-                <div className="flex justify-center">
-                <p>Don&rsquo;t you have account..?</p>
-                    <p className='font-semibold text-blue-800 hover:underline'> <Link className="lo-sign" to="/register">&nbsp;Sign Up</Link></p>
-                </div>
+                {
+                    role !== 'admin' ?
+                        <div className="flex justify-center">
+                        <p>Don&rsquo;t you have account..?</p>
+                            <p className='font-semibold text-blue-800 hover:underline'> <Link className="lo-sign" to="/register">&nbsp;Sign Up</Link></p>
+                        </div>
+                        : null
+                }        
             </form>
         </div>
     </div>
   );
 }
 
-
-// Add prop validation
-Login.propTypes = {
-    Role: PropTypes.string.isRequired,
-  };
 
 export default Login

@@ -1,22 +1,20 @@
 // import React from 'react'
-import { Routes, Route } from "react-router-dom";
-import Home from "../pages/User/Home" 
-import Login from "../componets/Login"
-import Register from "../componets/User/Register"
-// import { Toaster } from 'react-hot-toast';
-// <Toaster position='top-center'/>
+import { Routes, Route,Navigate} from "react-router-dom";
+import Home from "../pages/User/home"; 
+import Login from "../components/Login"
+import Register from "../components/User/Register"
+import { useSelector } from "react-redux";
 
-const Role = "User";
+
 
 const User = () => {
+  const userAuth = Boolean(useSelector((state) => state.user.token));
+
   return (
     <Routes>
-
-        <Route path="/login" element={<Login role ={Role} url='login'/>}/>
-        <Route path="/register" element={<Register/>}/>
+        <Route path="/login" element={userAuth ? <Navigate to='/' /> : <Login role='user'  url= '/login' /> }/>
+        <Route path="/register"  element={userAuth ? <Navigate to='/' /> : <Register />}/>
         <Route path="/" element={<Home/>}/>
-
-        {/* { <Route path="/signup" element={}/>} */}
 
     </Routes>
   )
