@@ -42,28 +42,28 @@ const Register = ()=> {
         }); 
 
 
-        function onCaptchaVerify() {
-            try{
-                if (!window.recaptchaVerifier) {
-                    window.recaptchaVerifier = new RecaptchaVerifier(
-                      "recaptcha-container",
-                      {
-                        size: "invisible",
-                        callback: () => {
-                            toast.success("Otp sent succesfully");
-                        },
-                        "expired-callback": () => {
-                          toast.error("TimeOut");
-                        }
-                      },
-                      auth
-                    )
-                  }
-            }
-            catch(err){
-                alert('oncaptcha err',err)
-            }
-          }
+    function onCaptchaVerify() {
+        try{
+            if (!window.recaptchaVerifier) {
+                window.recaptchaVerifier = new RecaptchaVerifier(
+                  "recaptcha-container",
+                  {
+                    size: "invisible",
+                    callback: () => {
+                        toast.success("Otp sent succesfully");
+                    },
+                    "expired-callback": () => {
+                      toast.error("TimeOut");
+                    }
+                  },
+                  auth
+                )
+              }
+        }
+        catch(err){
+            alert('oncaptcha err',err)
+        }
+      }
           
     const sendOtp =async (e) => {
         e.preventDefault();
@@ -157,7 +157,7 @@ const Register = ()=> {
 
   return (
       <div className='relative w-full h-full sm:h-screen  bg-slate-100'>
-    <div id='recaptcha-container'></div>
+        <div id='recaptcha-container'></div>
         <div className='flex justify-center items-center h-full '>
             { click ? (
                 <form action="" className='max-w-[410px] mx-auto w-full  p-8  rounded-lg m-8' onSubmit={sendOtp}>
@@ -202,16 +202,16 @@ const Register = ()=> {
 
                     <p className="text-center text-sm font-normal text-gray-600 pb-16 ">To Make A Acount...</p>
 
-                    <div className="">
+                    <div className="border-2 w-80 h-16">
                         <OtpInput
-            className='m-3'
-            OTPLength={6}
-            value={otp}
-            onChange={setOtp}
-            otpType='number'
-            disabled={false}
-            autoFocus
-          />
+                          className='m-3'
+                          OTPLength={6}
+                          value={otp}
+                          onChange={setOtp}
+                          otpType='number'
+                          disabled={false}
+                          autoFocus
+                        />
                     </div>
                     <p className='text-center text-sm text-red-600'>{error}</p>
                     <div className='flex justify-center'>

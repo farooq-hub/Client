@@ -43,7 +43,6 @@ const ProviderList = () => {
         }
     };
 
-
     const setProvider = (provider,modal) => {
         setSelectedProvider(provider);
         modal === 'service' ? setIsOpen(true) : setPlaceOpen(true);
@@ -186,16 +185,10 @@ const ProviderList = () => {
                                     value={searchText}
                                     onChange={(e) => setSearchText(e.target.value)}
                                 />
-
-
-
                             </div>
                         </div>
-
                     </div>
                 </div>
-
-
                 <div className="flex flex-col mt-6">
                     <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                         <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
@@ -215,19 +208,15 @@ const ProviderList = () => {
                                             <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 -text-gray-400">
                                                 Services
                                             </th>
-                                            <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 -text-gray-400">Places</th>
-                                            <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 -text-gray-400">Status</th>
-                                            <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 -text-gray-400">Action</th>
-
-
-
+                                            <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500">Places</th>
+                                            <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500">Status</th>
+                                            <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-gray-200 -divide-gray-700 -bg-gray-900">
                                         {providerList?.length > 0 ? (
                                             providerList.filter((provider) => provider.name.toLowerCase().includes(searchText)).map((provider) => (
-                                                <tr key={provider._id}>
-                                                    
+                                                <tr key={provider._id}>                                                    
                                                     <td className="px-4 py-4 text-sm font-medium whitespace-nowrap">
                                                         <div>
                                                             <h2 className="font-medium text-black">{provider?.name}</h2>
@@ -246,7 +235,6 @@ const ProviderList = () => {
                                                             >
                                                                 Services
                                                             </button>
-
                                                             {isOpen && (
                                                                 <div
                                                                     className="fixed inset-0 z-10 overflow-y-auto"
