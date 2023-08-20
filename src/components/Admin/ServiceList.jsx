@@ -97,7 +97,7 @@ const ServiceList = () => {
                 const response = await axiosInstance.post('/admin/addService', formData, {
                     headers: {
                         Authorization: `Bearer ${token}`,
-                        'Content-Type': 'multipart/form-data'
+                        'Content-Type': 'multipart/form-data'                                     
                     }
                 });
                 if (response.status === 200) {

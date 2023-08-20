@@ -1,20 +1,22 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MdPhoneIphone,MdLockOutline} from 'react-icons/md';
-import axiosInstance from '../api/axios';
 import { userLogin } from '../store/slice/user';
 import { adminLogin } from '../store/slice/admin'
+import { providerLogin } from '../store/slice/provider';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {  toast } from 'react-toastify';
 import PropTypes from 'prop-types';
+import { adminPost } from '../Services/adminApi';
+import { usersPost } from '../Services/userApi';
+import { providerPost } from '../Services/providerApi';
 
 Login.propTypes = {
     role: PropTypes.string.isRequired, // Define the expected type and mark it as required
-    url: PropTypes.string.isRequired, // Define the expected type and mark it as required
   };
 
-function Login({role,url}) {
+function Login({role}) {
 
     const navigate = useNavigate()
     const dispatch = useDispatch();
@@ -22,7 +24,6 @@ function Login({role,url}) {
     const [formData, setFormData] = useState({
         phone: '',
         password: ''
-  
     });
 
      
@@ -58,41 +59,38 @@ function Login({role,url}) {
         const formValid = errorHandle();
         e.preventDefault();
         if (formValid) {
-           try {
-              const response = await axiosInstance.post(url, formData);
-              if (response.status === 200) {
-  
-                const name = response?.data?.name;
-                const token = response?.data?.token;
-                const role = response?.data?.role;
-                console.log(role, name, token);
-                if (role === 'user') {
-                    dispatch(userLogin({ name, token, role}));
-                    navigate('/')
-                } else if (role === 'admin') {
-                    dispatch(adminLogin({ name, token, role}));
-                    navigate('/admin')
-                //  } else if (role === 'provider') {
-                //     dispatch(providerLogin({ name, token, role, id }));
-                //     navigate('/provider')
-                }
-              }
-           } catch (error) {
-              
-              if (error.response?.status === 401) {
-                 toast.error(error?.response?.data?.errMsg)
-              } else if (error.response?.status === 402) {
-                 toast.warn(error?.response?.data?.errMsg)
-              }else if (error.response?.status === 504) {
-                toast.warn(error?.response?.data?.errMsg)
-             } else {
-                 toast.error('Something went wrong')
-              }
-           }
-        } else {
+            try {
+                const response = await role == 'admin' ? adminPost('/login',formData) : role == 'user' ? usersPost('/login',formData):providerPost('/login',formData)
+                response.then((response)=>{
+                        const name = response?.name;
+                        const token = response?.token;
+                        const role = response?.role;
+                        console.log(role, name, token);
+                        if (role === 'user') {
+                            dispatch(userLogin({ name, token, role}));
+                            toast.success(response.msg)
+                            navigate('/')
+
+                        } else if (role === 'admin') {
+                            console.log(role);
+                            dispatch(adminLogin({ name, token, role}));
+                            toast.success(response.msg)
+                            navigate('/admin')
+                        } else if (role === 'provider') {
+                            dispatch(providerLogin({ name, token, role }));
+                            toast.success(response.msg)
+                            navigate('/provider/home')
+                        }
+                }).catch((error)=>{
+                    console.log(error);
+                })
+            } catch (error) {
+                toast.error('Something went wrong')
+            }
+        }else {
             toast.error('Something  wrong')
         }
-     }
+    }
   
     
   return (
@@ -117,9 +115,15 @@ function Login({role,url}) {
                 {
                     role !== 'admin' ?
                         <div className='flex justify-between mb-4'>
-                            <p className='font-semibold text-gray-500 hover:underline'> <Link className="lo-sign" to="/signup">Login with OTP</Link></p>
-                            <p className='font-semibold text-gray-500 hover:underline'> <Link className="lo-sign" to="/signup">Forgot password?</Link></p>
-                        </div>
+                                {role == 'user' ?
+                                    <p className='font-semibold text-gray-500 hover:underline'> <Link className="lo-sign" to="/otpLogin">Login with OTP</Link></p>:
+                                    <p className='font-semibold text-gray-500 hover:underline'> <Link className="lo-sign" to="/provider/otpLogin">Login with OTP</Link></p>
+                                }
+                                {role == 'user' ?
+                                    <p className='font-semibold text-gray-500 hover:underline'> <Link className="lo-sign" to="/forgetPassword">Forgot password?</Link></p>:
+                                    <p className='font-semibold text-gray-500 hover:underline'> <Link className="lo-sign" to="/provider/forgetPassword">Forgot password?</Link></p>
+                                }
+                        </div>    
                         : null
                 }
                 <div  className={`${role=='admin'?'flex justify-center mt-6' :'flex justify-center'}`}>
@@ -129,7 +133,10 @@ function Login({role,url}) {
                     role !== 'admin' ?
                         <div className="flex justify-center">
                         <p>Don&rsquo;t you have account..?</p>
-                            <p className='font-semibold text-blue-800 hover:underline'> <Link className="lo-sign" to="/register">&nbsp;Sign Up</Link></p>
+                            {role == 'user' ? 
+                                <p className='font-semibold text-blue-800 hover:underline'> <Link className="lo-sign" to="/register">&nbsp;Sign Up</Link></p> :
+                                <p className='font-semibold text-blue-800 hover:underline'> <Link className="lo-sign" to="/provider/register">&nbsp;Sign Up</Link></p>   
+                            }
                         </div>
                         : null
                 }        

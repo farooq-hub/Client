@@ -12,7 +12,7 @@ export const userAuthSlice = createSlice({
     reducers:{
         userLogin : (state,action) => {
             console.log(action.payload);
-            state.role = action.payload.user;
+            state.role = action.payload.role;
             state.name = action.payload.name;
             state.token = action.payload.token;
         },

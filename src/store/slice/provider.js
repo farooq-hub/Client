@@ -7,11 +7,11 @@ const initialState = {
 };
 
 export const providerAuthSlice = createSlice({
-    name: "adminAuth",
+    name: "providerAuth",
     initialState,
     reducers: {
         providerLogin: (state, action) => {
-            state.role = action.payload.user;
+            state.role = action.payload.role;
             state.name = action.payload.name;
             state.token = action.payload.token;
         },

@@ -1,6 +1,6 @@
 import {useState} from 'react'
-import { Link, useNavigate } from 'react-router-dom';
-import { MdPhoneIphone,MdLockOutline ,MdPerson} from 'react-icons/md';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { MdPhoneIphone,MdLockOutline ,MdPerson, MdOutlineGppGood} from 'react-icons/md';
 import { FiAtSign,FiCode} from 'react-icons/fi';
 import { signInWithPhoneNumber, RecaptchaVerifier } from "firebase/auth";
 import { auth } from "../../api/firebace.config";
@@ -11,6 +11,7 @@ import {  toast } from 'react-toastify';
 const Register = ()=> {
 
     const [click,setClick] = useState(true)
+    const {referralCode} = useParams()
     const [error, setError] = useState('');
     const [otp, setOtp] = useState();
     const [formData, setFormData] = useState({
@@ -18,6 +19,7 @@ const Register = ()=> {
         email: "",
         phone: "",
         password: "",
+        repassword:"",
         referalCode: ""
       });
       const navigate = useNavigate();
@@ -50,7 +52,6 @@ const Register = ()=> {
                   {
                     size: "invisible",
                     callback: () => {
-                        toast.success("Otp sent succesfully");
                     },
                     "expired-callback": () => {
                       toast.error("TimeOut");
@@ -61,7 +62,16 @@ const Register = ()=> {
               }
         }
         catch(err){
-            alert('oncaptcha err',err)
+          toast.error(err)
+          alert(err)
+          // window.location.reload()
+          const recaptchaContainer = document.getElementById('recaptcha-container');
+          if (recaptchaContainer) {
+              recaptchaContainer.innerHTML = ''; // Clear the recaptcha-container
+              const newRecaptchaContainer = document.createElement('div');
+              newRecaptchaContainer.id = 'recaptcha-container';
+              recaptchaContainer.parentNode.replaceChild(newRecaptchaContainer, recaptchaContainer);
+          }
         }
       }
           
@@ -75,13 +85,20 @@ const Register = ()=> {
             signInWithPhoneNumber(auth, phoneNo, appVerifier)
               .then((confirmationResult) => {
                   window.confirmationResult = confirmationResult;
-                  console.log('lkkkkkkkkkkkkkkkkkkkk')
-                setClick(false);
-      
+                  toast.success("Otp sent succesfully");
+                  setClick(false);
               })
               .catch((error) => {
-                console.log(error);
-                toast.error(error);
+                  toast.error(error)
+                  alert(error)
+                  // window.location.reload()
+                  const recaptchaContainer = document.getElementById('recaptcha-container');
+                  if (recaptchaContainer) {
+                      recaptchaContainer.innerHTML = ''; // Clear the recaptcha-container
+                      const newRecaptchaContainer = document.createElement('div');
+                      newRecaptchaContainer.id = 'recaptcha-container';
+                      recaptchaContainer.parentNode.replaceChild(newRecaptchaContainer, recaptchaContainer);
+                  }
               });
         }else(
             generateError(error)
@@ -93,7 +110,7 @@ const Register = ()=> {
     const verifyOtp = ()=>{
       console.log(otp);
         if (otp) {
-        window.confirmationResult
+          window.confirmationResult
             .confirm(otp)
             .then(async () => {
             handleSubmit();
@@ -102,16 +119,17 @@ const Register = ()=> {
               setError("Enter a valid otp");
             });
         } else {
-        setError("Enter otp ");
+          setError("Enter otp");
         }
     }
 
     const errorHandle = () => {
-        const { name, phone, password, email } = formData;
+        const { name, phone, password,repassword, email } = formData;
+        console.log(referralCode);
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const pattern = /^[6789]\d{9}$/;
         console.log('kjjj',pattern.test(phone));
-        if(name.trim().length == 0 || phone.trim().length == 0 || email.trim().length == 0 || password.trim().length == 0){
+        if(name.trim().length == 0 || phone.trim().length == 0 || email.trim().length == 0 || password.trim().length == 0 ||repassword.trim().length == 0){
             setError('Fill all the fields')
             return false
         }else if(name.trim().length < 2){
@@ -132,7 +150,10 @@ const Register = ()=> {
         }else if(password.trim().length < 4){
             setError('Password must have at least 4 characters long')
             return false
-        }else{
+        }else if(repassword !== password){
+          setError('Confirm password incurrect')
+          return false
+      }else{
             setError('')
             return true
         }
@@ -181,6 +202,10 @@ const Register = ()=> {
                     <div className="flex items-center border-2 py-2 px-3 rounded-2xl mb-4">
                         <MdLockOutline className='h-5 w-5 text-gray-400'/>
                         <input className="pl-2 outline-none border-none h-8 bg-slate-100" type="password" name="password"  placeholder="Password (4)" value={formData.password} onChange={ handleChange}/>
+                    </div>
+                    <div className="flex items-center border-2 py-2 px-3 rounded-2xl mb-4">
+                        <MdOutlineGppGood className='h-5 w-5 text-gray-400'/>
+                        <input className="pl-2 outline-none border-none h-8 bg-slate-100" type="password" name="repassword"  placeholder="Confirm Password " value={formData.repassword} onChange={ handleChange}/>
                     </div>
                     <div className="flex items-center border-2 py-2 px-3 rounded-2xl mb-2">
                         <FiCode className='h-5 w-5 text-gray-400'/>

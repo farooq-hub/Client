@@ -11,10 +11,10 @@ const Provider = () => {
 
   return (
     <Routes>
-        <Route path="/login" element={providerAuth ? <Navigate to='/' /> : <Login role='provider'  url= '/provider/login' /> }/>
-        <Route path="/Register" element={providerAuth ? <Navigate to='/' /> : <Register/> }/>
-        <Route path="/home" element={providerAuth ? <ProviderHome/> : <Navigate to='/provider/login' />}></Route>
-        <Route path="/" element={ <ProviderHome/>}></Route>
+        <Route path="/login" element={providerAuth ? <Navigate to='/provider/' /> : <Login role='provider'/> }/>
+        <Route path="/register" element={providerAuth ? <Navigate to='/provider/' /> : <Register/> }/>
+        <Route path="/home" element={providerAuth ? <ProviderHome/> : <Navigate to='/provider/login' />}/>
+        <Route path="/" element={providerAuth ? <ProviderHome/> : <Login role='provider'/>}/>
     </Routes>
   )
 }

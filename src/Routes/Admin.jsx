@@ -13,7 +13,7 @@ const Admin = () => {
 
   return (
     <Routes>
-        <Route path="/login" element={userAuth ? <Navigate to='/admin' /> : <Login role='admin'  url= '/admin/login' /> }/>
+        <Route path="/login" element={userAuth ? <Navigate to='/admin' /> : <Login role='admin'  /> }/>
         <Route path="/home" element={userAuth ? <Home/> : <Navigate to='/admin/login' />  }/>
         <Route path="/services" element={userAuth ? <Service/> : <Navigate to='/admin/login' />  }/>
         <Route path="/users" element={userAuth ? <User/> : <Navigate to='/admin/login' />  }/>

@@ -2,7 +2,7 @@ import Sidebar from "../../components/Provider/Sidebar";
 
 
 const Home = () => {
-  
+    
     return (
 
         <div className='bg-gray-100 h-screen'>

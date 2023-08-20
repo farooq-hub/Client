@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { FaHome } from 'react-icons/fa'
-import { useSelector } from "react-redux";
 import { GrPowerShutdown } from 'react-icons/gr'
 import useWidthSize from "../../utils/useWidthSize";
 import NavItem from '../NavItem'
@@ -8,7 +7,6 @@ const Sidebar = () => {
    
     const [isOpen, setIsOpen] = useState(false);
     const widthSize = useWidthSize();
-    const {token} = useSelector(state => state.provider.token)
     const toggleSidebar = () => {
         setIsOpen(true);
     };
@@ -20,7 +18,7 @@ const Sidebar = () => {
    
     return (
 
-        <div className="flex ">
+        <div className="flex">
             <div
                 className={`fixed inset-y-0 left-0 z-50 w-64 bg-white text-black  border-r  border-black-100 shadow transition-transform duration-300 ease-in-out transform ${isOpen ? 'translate-x-0' : '-translate-x-full'
                     } md:translate-x-0`}
@@ -73,11 +71,9 @@ const Sidebar = () => {
 
 
             <div className="flex flex-col flex-grow">
-
                 <div className="border-r  border-black-100 shadow transition-transform duration-300 ease-in-out transform">
                     <div className="flex items-center justify-between px-4 py-3 bg-white">
                         <div >
-
                             <button
                                 onClick={toggleSidebar}
                                 className="block text-gray-500 hover:text-white focus:text-white focus:outline-none md:hidden"
@@ -101,13 +97,9 @@ const Sidebar = () => {
                        
                     </div>
                 </div>
-
-
                 <div className="flex-grow p-4">
-
                 </div>
             </div>
-
             {isOpen && (
                 <div
                     className="fixed inset-0 bg-black opacity-50 cursor-pointer"
