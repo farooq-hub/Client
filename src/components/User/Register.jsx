@@ -1,7 +1,7 @@
 import {useState} from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { MdPhoneIphone,MdLockOutline ,MdPerson, MdOutlineGppGood} from 'react-icons/md';
-import { FiAtSign,FiCode} from 'react-icons/fi';
+import { FiAtSign} from 'react-icons/fi';
 import { signInWithPhoneNumber, RecaptchaVerifier } from "firebase/auth";
 import { auth } from "../../api/firebace.config";
 import OtpInput from 'otp-input-react'
@@ -11,7 +11,10 @@ import {  toast } from 'react-toastify';
 const Register = ()=> {
 
     const [click,setClick] = useState(true)
-    const {referralCode} = useParams()
+    const location = useLocation();
+    const searchParams = new URLSearchParams(location.search); 
+    const referralCode = searchParams.get('referralCode');
+
     const [error, setError] = useState('');
     const [otp, setOtp] = useState();
     const [formData, setFormData] = useState({
@@ -20,7 +23,7 @@ const Register = ()=> {
         phone: "",
         password: "",
         repassword:"",
-        referalCode: ""
+        referralCode: ""
       });
       const navigate = useNavigate();
       const handleChange = (e) => {
@@ -113,7 +116,7 @@ const Register = ()=> {
           window.confirmationResult
             .confirm(otp)
             .then(async () => {
-            handleSubmit();
+              handleSubmit();
             })
             .catch(() => {
               setError("Enter a valid otp");
@@ -125,10 +128,17 @@ const Register = ()=> {
 
     const errorHandle = () => {
         const { name, phone, password,repassword, email } = formData;
-        console.log(referralCode);
+        if(referralCode){
+          console.log(referralCode);
+          setFormData((prevFormData) => ({
+            ...prevFormData,
+            [referralCode]: referralCode,
+          }));
+        }
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const pattern = /^[6789]\d{9}$/;
-        console.log('kjjj',pattern.test(phone));
+        const MobRegex = /^[6789]\d{9}$/;
+        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/; // At least 8 characters, one letter, one number
+        console.log('kjjj',MobRegex.test(phone),passwordRegex.test(password));
         if(name.trim().length == 0 || phone.trim().length == 0 || email.trim().length == 0 || password.trim().length == 0 ||repassword.trim().length == 0){
             setError('Fill all the fields')
             return false
@@ -140,17 +150,17 @@ const Register = ()=> {
         //     setError('Enter a valid phone number')
         //     return false
         // }
-        else if (!pattern.test(phone)){
+        else if (!MobRegex.test(phone)){
           setError('Enter a valid phone number')
           return false
         }
         else if(!emailRegex.test(email)){
             setError('Enter a valid email address')
             return false
-        }else if(password.trim().length < 4){
-            setError('Password must have at least 4 characters long')
-            return false
-        }else if(repassword !== password){
+        }else if(!passwordRegex.test(password)){
+          setError('Password must have  At least 8 characters, one letter, one number')
+          return false
+      }else if(repassword !== password){
           setError('Confirm password incurrect')
           return false
       }else{
@@ -201,15 +211,11 @@ const Register = ()=> {
                     </div>
                     <div className="flex items-center border-2 py-2 px-3 rounded-2xl mb-4">
                         <MdLockOutline className='h-5 w-5 text-gray-400'/>
-                        <input className="pl-2 outline-none border-none h-8 bg-slate-100" type="password" name="password"  placeholder="Password (4)" value={formData.password} onChange={ handleChange}/>
+                        <input className="pl-2 outline-none border-none h-8 bg-slate-100" type="password" name="password"  placeholder="Password (8)" value={formData.password} onChange={ handleChange}/>
                     </div>
                     <div className="flex items-center border-2 py-2 px-3 rounded-2xl mb-4">
                         <MdOutlineGppGood className='h-5 w-5 text-gray-400'/>
                         <input className="pl-2 outline-none border-none h-8 bg-slate-100" type="password" name="repassword"  placeholder="Confirm Password " value={formData.repassword} onChange={ handleChange}/>
-                    </div>
-                    <div className="flex items-center border-2 py-2 px-3 rounded-2xl mb-2">
-                        <FiCode className='h-5 w-5 text-gray-400'/>
-                        <input className="pl-2 outline-none border-none h-8 bg-slate-100" type="text" name="referalCode"  placeholder="Referal Code ( 'If Any' )" value={formData.referalCode} onChange={ handleChange}/>
                     </div>
                     <p className='text-center text-sm text-red-600'>{error}</p>
                     <div className='flex justify-center'>

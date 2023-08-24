@@ -1,23 +1,52 @@
 import axiosInstance from '../api/axios';
 import {  toast } from 'react-toastify';
-// import { persistor } from '../store/store';
 
+const getToken = ()=>{
+   const storedAdmin = localStorage.getItem('persist:adminAuth');
+   const admin = JSON.parse(storedAdmin)
+   const token = admin.token.substring(1, admin.token.length - 1)
+   return token
+}
 
-// Assuming you want to access the 'admin' slice of the state
-// const persistedAdminState = persistor.getState().providerAuth;
-
-// console.log('Persisted Admin State:', persistedAdminState)
-// const storedAdmin = localStorage.getItem('adminAuth');
-
-const adminPost =async (url,formData) => { 
+const adminGet =async (url) => { 
    try {
-      console.log('/provider'+ url,formData ,typeof formData);
-      const response = await axiosInstance.post('/admin'+ url, formData);
+      const token = getToken();
+      const response = await axiosInstance.get('/admin'+ url,token ? { headers: { Authorization: `Bearer ${token}`}} :{});
+      response.data.msg ? toast.success(response?.data?.msg) : null
       return response.data        
    } catch (error) {
       if (error.response?.status === 401) {
          toast.error(error?.response?.data?.errMsg)
       } else if (error.response?.status === 402) {
+         toast.warn(error?.response?.data?.errMsg)
+      }else if (error.response?.status === 504) {
+        toast.warn(error?.response?.data?.errMsg)
+      }else if (error.response?.status === 500) {
+         console.log(error.response?.data.errMsg);
+         toast.warn(error?.response?.data?.errMsg)
+      }
+      else {
+         toast.error(error)
+      }
+   }
+}
+
+const adminPost =async (url,formData) => { 
+   try {
+      const token = getToken();
+      const response = await axiosInstance.post('/admin'+ url, formData,
+      token ? { headers: { Authorization: `Bearer ${token}`}} :{}
+      );
+      response.data.msg ? toast.success(response?.data?.msg) : null
+      return response.data        
+   } catch (error) {
+      if (error.response?.status === 401) {
+         toast.error(error?.response?.data?.errMsg)
+      } else if (error.response?.status === 402) {
+         toast.warn(error?.response?.data?.errMsg)
+      }
+      else if (error.response?.status === 500) {
+         console.log(error.response?.data.errMsg);
          toast.warn(error?.response?.data?.errMsg)
       }else if (error.response?.status === 504) {
         toast.warn(error?.response?.data?.errMsg)
@@ -29,14 +58,16 @@ const adminPost =async (url,formData) => {
 
 // console.log(storedAdmin,'fhjdgksksjfhgasefky')
 
-const adminPatch =async (url,formData,token) => { 
+const adminPatch =async (url,formData,img) => { 
    try {
-
-      console.log('/provider'+ url,formData ,typeof formData);
-      const response = await axiosInstance.patch('/admin'+ url, formData,{
+      const token = getToken();
+      const response = await axiosInstance.patch('/admin' + url, formData, token ? {
          headers: {
-             Authorization: `Bearer ${token}`,
-         }});
+           Authorization: `Bearer ${token}`,
+           ...(img ? { 'Content-Type': 'multipart/form-data' } : {})
+         }
+      }:{}); 
+      response.data.msg ? toast.success(response?.data?.msg) : null
       return response.data        
    } catch (error) {
       if (error.response?.status === 401) {
@@ -45,15 +76,17 @@ const adminPatch =async (url,formData,token) => {
          toast.warn(error?.response?.data?.errMsg)
       }else if (error.response?.status === 504) {
         toast.warn(error?.response?.data?.errMsg)
-     } else {
+      }else if (error.response?.status === 500) {
+         toast.warn(error?.response?.data?.errMsg)
+      }
+      else {
          toast.error(error)
       }
    }
-   
 }
 
 
 
 
-export {adminPost,adminPatch}
+export {adminGet,adminPost,adminPatch}
 

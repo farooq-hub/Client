@@ -5,6 +5,7 @@ import NavItem from "../NavItem";
 import { FaHome } from 'react-icons/fa'
 import { FiLogIn } from 'react-icons/fi'
 import { GrPowerShutdown } from 'react-icons/gr'
+import {AiOutlineUser} from 'react-icons/ai'
 
 
 
@@ -65,6 +66,11 @@ const Sidebar = () => {
                     {/* <NavItem icon={faUser} name={"PROFILE"} path={'/profile'} /> */}
                     {/* <NavItem icon={faCircleInfo} name={'MORE'} path={'/more'} /> */}
                     {/* <NavItem icon={faHandshakeAngle} name={'HELP'} path={'/help'} /> */}
+                    {token ?
+                        <NavItem icon={<AiOutlineUser/>} name={'PROFILE'} path={'/profile'} />
+                        : 
+                        <></>
+                    }
                     {token ?
                         <NavItem icon={<GrPowerShutdown/>} name={'LOGOUT'} path={'/login'} />
                         : 

@@ -1,10 +1,17 @@
 import axiosInstance from '../api/axios';
 import {  toast } from 'react-toastify';
 
+const getToken = ()=>{
+   const storedAdmin = localStorage.getItem('persist:userAuth');
+   const admin = JSON.parse(storedAdmin)
+   const token = admin.token.substring(1, admin.token.length - 1)
+   return token
+}
+
 const usersPost =async (url,formData) => { 
    try {
-      console.log(url,formData ,typeof formData);
-      const response = await axiosInstance.post(url, formData);
+      const response = await axiosInstance.post(url, formData);      
+      response.data.msg ? toast.success(response?.data?.msg) : null
       return response.data        
    } catch (error) {
       if (error.response?.status === 401) {
@@ -13,7 +20,32 @@ const usersPost =async (url,formData) => {
          toast.warn(error?.response?.data?.errMsg)
       }else if (error.response?.status === 504) {
         toast.warn(error?.response?.data?.errMsg)
-     } else {
+     }else if (error.response?.status === 500) {
+      console.log(error.response?.data.errMsg);
+      toast.warn(error?.response?.data?.errMsg)
+   } else {
+         toast.error(error)
+      }
+   }
+}
+
+const usersGet =async (url) => { 
+   try {
+      const token = getToken();
+      const response = await axiosInstance.get( url,token ? { headers: { Authorization: `Bearer ${token}`}} :{});
+      response.data.msg ? toast.success(response?.data?.msg) : null
+      return response.data        
+   } catch (error) {
+      if (error.response?.status === 401) {
+         toast.error(error?.response?.data?.errMsg)
+      } else if (error.response?.status === 402) {
+         toast.warn(error?.response?.data?.errMsg)
+      }else if (error.response?.status === 504) {
+        toast.warn(error?.response?.data?.errMsg)
+      }else if (error.response?.status === 500) {
+         console.log(error.response?.data.errMsg);
+         toast.warn(error?.response?.data?.errMsg)
+      } else {
          toast.error(error)
       }
    }
@@ -21,5 +53,5 @@ const usersPost =async (url,formData) => {
 
 
 
-export {usersPost,}
+export {usersPost,usersGet}
 

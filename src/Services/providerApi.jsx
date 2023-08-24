@@ -13,7 +13,11 @@ const providerPost =async (url,formData) => {
          toast.warn(error?.response?.data?.errMsg)
       }else if (error.response?.status === 504) {
         toast.warn(error?.response?.data?.errMsg)
-     } else {
+     }else if (error.response?.status === 500) {
+      console.log(error.response?.data.errMsg);
+      toast.warn(error?.response?.data?.errMsg)
+   } else {
+      
          toast.error(error)
       }
    }

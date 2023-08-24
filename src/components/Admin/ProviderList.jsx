@@ -1,78 +1,57 @@
 import { useState, useEffect } from "react";
-import axiosInstance from '../../api/axios'
-import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import { adminGet, adminPatch } from "../../Services/adminApi";
 
 
 const ProviderList = () => {
 
-    const token = useSelector((state) => state.admin.token);
-
     const [searchText, setSearchText] = useState('');
-
     const [confirmAction, setConfirmAction] = useState(false)
-
     const [providerList, setProviderList] = useState([]);
-
     const [providerAction,setProviderAction] = useState({});
-
     const [selectedProvider, setSelectedProvider] = useState([]);
-    
-    const [isOpen, setIsOpen] = useState(false);
-
+    const [servOpen, setServOpen] = useState(false);
     const [placeOpen, setPlaceOpen] = useState(false);
 
-
     const placeModalClose = () => setPlaceOpen(false);
-    const closeModal = () => setIsOpen(false);
+    const closeModal = () => setServOpen(false);
 
     const getProviderData = async () => {
         try {
-            const response = await axiosInstance.get('/admin/providerList', {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                }
-            });
-           
-            setProviderList(response.data.providerData);
-            
-
-          
+            await adminGet('/providerList').then((res)=>{
+                setProviderList(res.providerData);
+            }).catch((error)=>{
+                console.log(error,'kkkkkkkkkkkk');
+            }) 
         } catch (error) {
+            console.log(error,'fffffffffff');
             toast.error('Something went wrong')
         }
     };
 
     const setProvider = (provider,modal) => {
         setSelectedProvider(provider);
-        modal === 'service' ? setIsOpen(true) : setPlaceOpen(true);
+        modal === 'service' ? setServOpen(true) : setPlaceOpen(true);
     }
 
     const handleUnBlock = async (providerId) => {
         try {
-
-            const response = await axiosInstance.patch(`/admin/UnblockProvider/${providerId}`, {}, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                }
-            });
-
-            if (response.status === 200) {
-                toast.success('Unblocked Successfully');
-                setProviderList(prevList => {
-                    const updatedList = prevList.map(provider => {
-                        if (provider._id === providerId) {
-                            return {
-                                ...provider,
-                                isBanned: false
-                            };
-                        }
-                        return provider;
+            await adminPatch(`/UnblockProvider/${providerId}`,{}).then((res)=>{
+                if(res){
+                    setProviderList(prevList => {
+                        const updatedList = prevList.map(provider => {
+                            if (provider._id === providerId) {
+                                return {
+                                    ...provider,
+                                    isBanned: false
+                                };
+                            }
+                            return provider;
+                        });
+                        return updatedList;
                     });
-                    return updatedList;
-                });
-            }
-
+                }
+            })
         } catch (error) {
             console.log(error);
             toast.error(error.response.data.errMsg);
@@ -81,29 +60,22 @@ const ProviderList = () => {
 
     const handleBlock = async (providerId) => {
         try {
-
-            const response = await axiosInstance.patch(`/admin/blockProvider/${providerId}`, {}, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
+            await adminPatch(`/blockProvider/${providerId}`,{}).then((res)=>{
+                if(res){
+                    setProviderList(prevList => {
+                        const updatedList = prevList.map(provider => {
+                            if (provider._id === providerId) {
+                                return {
+                                    ...provider,
+                                    isBanned: true
+                                };
+                            }
+                            return provider;
+                        });
+                        return updatedList;
+                    });                    
                 }
-            });
-
-            if (response.status === 200) {
-                toast.success('Blocked Successfully');
-                setProviderList(prevList => {
-                    const updatedList = prevList.map(provider => {
-                        if (provider._id === providerId) {
-                            return {
-                                ...provider,
-                                isBanned: true
-                            };
-                        }
-                        return provider;
-                    });
-                    return updatedList;
-                });
-            }
-
+            })
         } catch (error) {
             toast.error(error.response.data.errMsg);
         }
@@ -112,38 +84,31 @@ const ProviderList = () => {
 
     const handleTBC = async (providerId) => {
         try {
-
-            const response = await axiosInstance.patch(`/admin/confirmProvider/${providerId}`, {}, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                }
-            });
-
-            if (response.status === 200) {
-                toast.success('Confirmed Successfully');
-                setProviderList(prevList => {
-                    const updatedList = prevList.map(provider => {
-                        if (provider._id === providerId) {
-                            return {
-                                ...provider,
-                                adminConfirmed: true
-                            };
-                        }
-                        return provider;
+            await adminPatch(`/confirmProvider/${providerId}`,{}).then((res)=>{
+                if(res){
+                    setProviderList(prevList => {
+                        const updatedList = prevList.map(provider => {
+                            if (provider._id === providerId) {
+                                return {
+                                    ...provider,
+                                    adminConfirmed: true
+                                };
+                            }
+                            return provider;
+                        });
+                        return updatedList;
                     });
-                    return updatedList;
-                });
-            }
-
+                }
+            }).catch((error)=>{
+                console.log(error);
+            })
         } catch (error) {
-            toast.error(error.response.data.errMsg);
+            console.log(error);
         }
     }
 
     const handleConfirmation = (id) => {
-        
         const provider = providerList.find((provider) => provider._id === id);
-       
         setProviderAction(provider);
         setConfirmAction(true);
     };
@@ -199,16 +164,15 @@ const ProviderList = () => {
                                             <th scope="col" className="py-3.5 px-4 text-sm font-normal text-left rtl:text-right text-gray-500 -text-gray-400">
                                                 <button className="flex items-center gap-x-3 focus:outline-none">
                                                     <span>Name</span>
-
                                                 </button>
                                             </th>
-                                            <th scope="col" className="px-12 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 -text-gray-400">
+                                            <th scope="col" className="px-10 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 -text-gray-400">
                                                 Phone
                                             </th>
-                                            <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 -text-gray-400">
+                                            <th scope="col" className="px-4 py-3.5 text-sm font-normal text-center rtl:text-right text-gray-500 -text-gray-400">
                                                 Services
                                             </th>
-                                            <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500">Places</th>
+                                            <th scope="col" className="px-4 py-3.5 text-sm font-normal text-center rtl:text-right text-gray-500">Places</th>
                                             <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500">Status</th>
                                             <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500">Action</th>
                                         </tr>
@@ -230,34 +194,22 @@ const ProviderList = () => {
                                                     <td className="px-4 py-4 text-sm font-medium whitespace-nowrap">
                                                         <div className="relative flex justify-center">
                                                             <button
+                                                                className="p-2  bg-gray-700 text-white rounded-md hover:bg-gray-500"
                                                                 onClick={() => setProvider(provider,'service')}
-                                                                className="btn-sm  bg-indigo-500 text-white rounded-md hover:bg-indigo-900 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80"
-                                                            >
-                                                                Services
-                                                            </button>
-                                                            {isOpen && (
-                                                                <div
-                                                                    className="fixed inset-0 z-10 overflow-y-auto"
-                                                                    aria-labelledby="modal-title"
-                                                                    role="dialog"
-                                                                    aria-modal="true"
-                                                                >
+                                                            >Services</button>
+                                                            {servOpen || placeOpen ? (
+                                                                <div className="fixed inset-0 z-10 overflow-y-auto">
                                                                     <div className="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
                                                                         <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-
                                                                         <div className="relative inline-block px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl rtl:text-right -bg-gray-900 sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:p-6">
                                                                             <div>
-                                                                              
-
                                                                                 <div className="mt-2 text-center">
-                                                                                    <h3 className="text-lg font-medium leading-6 text-gray-800 capitalize -text-white" id="modal-title">
+                                                                                    <h3 className="leading-6 text-gray-800 capitalize " id="modal-title">
                                                                                         Services
                                                                                     </h3>
                                                                                     <p className="mt-2 text-sm text-gray-500 -text-gray-400">
                                                                                         {selectedProvider && selectedProvider?.services?.length > 0 && (
                                                                                             <div className="py-4 font-sans font-semibold">
-
-
                                                                                                 {selectedProvider?.services.map((service) => (
                                                                                                     <div key={service._id} className="text-center">
                                                                                                         <h1 >{service.serviceName}<br /></h1>
@@ -268,50 +220,34 @@ const ProviderList = () => {
                                                                                     </p>
                                                                                 </div>
                                                                             </div>
-
-                                                                            <div className="mt-5 sm:flex sm:items-center sm:justify-between">
-
-                                                                                <div className="sm:flex sm:items-center ">
-                                                                                    <button
-                                                                                        onClick={closeModal}
-                                                                                        className="w-full px-4 py-2 mt-2 text-sm font-medium tracking-wide text-gray-700 capitalize transition-colors duration-300 transform border border-gray-200 rounded-md sm:mt-0 sm:w-auto sm:mx-2 -text-gray-200 -border-gray-700 -hover:bg-gray-800 hover:bg-gray-100 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-40"
-                                                                                    >
-                                                                                        Cancel
-                                                                                    </button>
-
-
-                                                                                </div>
+                                                                            <div className="mt-4 sm:flex sm:items-center">
+                                                                                <button
+                                                                                    onClick={closeModal}
+                                                                                    className="w-full px-4 py-2 mt-2 text-sm font-medium tracking-wide text-slate-100 bg-red-400 hover:bg-red-500 capitalize transition-colors duration-300 transform rounded-md sm:mt-0 sm:w-auto sm:mx-2 "
+                                                                                >Close</button>
                                                                             </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                            )}
+                                                            ):null}
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div className="relative flex justify-center">
                                                             <button
                                                                 onClick={() => setProvider(provider,'place')}
-                                                                className="btn-sm  bg-indigo-500 text-white rounded-md hover:bg-indigo-900 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80"
-                                                            >
-                                                                Places
-                                                            </button>
+                                                                className="p-2 text-sm bg-gray-700 text-white rounded-md hover:bg-gray-500"
+                                                            >Places</button>
 
                                                             {placeOpen && (
                                                                 <div
-                                                                    className="fixed inset-0 z-10 overflow-y-auto"
-                                                                    aria-labelledby="modal-title"
-                                                                    role="dialog"
-                                                                    aria-modal="true"
-                                                                >
+                                                                    className="fixed inset-0 z-10 overflow-y-auto">
                                                                     <div className="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
                                                                         <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-
                                                                         <div className="relative inline-block px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl rtl:text-right -bg-gray-900 sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:p-6">
                                                                             <div>
                                                                                 <div className="flex items-center justify-center">
                                                                                     <svg xmlns="http://www.w3.org/2000/svg"  version="1.1" width="30" height="30" viewBox="0 0 256 256">
-
                                                                                         <defs>
                                                                                         </defs>
                                                                                         <g
@@ -427,7 +363,6 @@ const ProviderList = () => {
                                                                                         </g>
                                                                                     </svg>
                                                                                 </div>
-
                                                                                 <div className="mt-2 text-center">
                                                                                     <h3 className="text-lg font-medium leading-6 text-gray-800 capitalize -text-white" id="modal-title">
                                                                                         Places
@@ -480,29 +415,24 @@ const ProviderList = () => {
 
                                                     <td className="px-4 py-4 text-sm font-medium whitespace-nowrap">
                                                         <div>
-
                                                             {provider.adminConfirmed ? (
                                                                 provider.isBanned ? (
                                                                     <button
                                                                         onClick={() => handleConfirmation(provider._id)}
-                                                                        className="btn-sm bg-green-900 text-white rounded shadow hover:bg-green-950"
-                                                                    >
-                                                                        access
-                                                                    </button>
+                                                                        className="bg-green-900 p-2 text-white rounded shadow hover:bg-green-950"
+                                                                    >access</button>
                                                                 ) : (
                                                                     <button
                                                                             onClick={() => handleConfirmation(provider._id)}
-                                                                        className="btn-sm bg-red-500 text-white rounded shadow hover:bg-red-900"
+                                                                        className=" bg-red-500 p-2 text-white rounded shadow hover:bg-red-900"
                                                                     >
                                                                         block
                                                                     </button>
                                                                 )
                                                             ) : (
-
-
                                                                 <button
                                                                         onClick={() => handleConfirmation(provider._id)}
-                                                                    className="btn-sm bg-indigo-500 text-white rounded shadow hover:bg-indigo-900"
+                                                                    className="bg-gray-600 p-2 text-white rounded shadow hover:bg-indigo-900"
                                                                 >
                                                                     Confirm
                                                                 </button>
@@ -513,8 +443,8 @@ const ProviderList = () => {
                                                                 toast.info(
                                                                     <div>
                                                                         <p>Are you sure you want to proceed?</p>
-                                                                        <button className="btn-sm bg-indigo-500 text-white rounded-md" onClick={() => handleConfirmAction()}>Confirm</button>
-                                                                        <button className="btn-sm bg-red-500 ml-1 text-white rounded-md" onClick={() => setConfirmAction(false)}>Cancel</button>
+                                                                        <button className=" bg-indigo-500 text-white rounded-md" onClick={() => handleConfirmAction()}>Confirm</button>
+                                                                        <button className=" bg-red-500 ml-1 text-white rounded-md" onClick={() => setConfirmAction(false)}>Cancel</button>
                                                                     </div>,
                                                                     {
                                                                         toastId: '',
