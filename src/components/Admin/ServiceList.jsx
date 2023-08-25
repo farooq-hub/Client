@@ -123,6 +123,7 @@ const ServiceList = () => {
     if (editService.serviceName !== editFormData.serviceName || editService.serviceImage !== editFormData.file){
         setError('')
         setLoading(true);
+        console.log(editFormData); 
            try {
                 const img = true
                 await adminPatch('/services',editFormData,img).then((response)=>{

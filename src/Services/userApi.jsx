@@ -10,7 +10,35 @@ const getToken = ()=>{
 
 const usersPost =async (url,formData) => { 
    try {
-      const response = await axiosInstance.post(url, formData);      
+      const token = getToken();
+      const response = await axiosInstance.post(url, formData,token ? { headers: { Authorization: `Bearer ${token}`}} :{});      
+      response.data.msg ? toast.success(response?.data?.msg) : null
+      return response.data        
+   } catch (error) {
+      if (error.response?.status === 401) {
+         toast.error(error?.response?.data?.errMsg)
+      } else if (error.response?.status === 402) {
+         toast.warn(error?.response?.data?.errMsg)
+      }else if (error.response?.status === 504) {
+        toast.warn(error?.response?.data?.errMsg)
+     }else if (error.response?.status === 500) {
+      console.log(error.response?.data.errMsg);
+      toast.warn(error?.response?.data?.errMsg)
+   } else {
+         toast.error(error)
+      }
+   }
+}
+
+const usersPatch =async (url,formData,img) => { 
+   try {
+      const token = getToken();
+      const response = await axiosInstance.patch(url, formData, token ? {
+         headers: {
+           Authorization: `Bearer ${token}`,
+           ...(img ? { 'Content-Type': 'multipart/form-data' } : {})
+         }
+      }:{});      
       response.data.msg ? toast.success(response?.data?.msg) : null
       return response.data        
    } catch (error) {
@@ -53,5 +81,5 @@ const usersGet =async (url) => {
 
 
 
-export {usersPost,usersGet}
+export {usersPost,usersGet,usersPatch}
 

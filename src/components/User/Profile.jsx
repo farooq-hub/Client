@@ -1,15 +1,23 @@
-import { useEffect, useState } from "react"
-import { usersGet } from "../../Services/userApi"
+import { useEffect, useRef, useState } from "react"
+import { usersGet, usersPatch } from "../../Services/userApi"
 import  avatar  from "../../assets/very_big_Luffy.jpg"
-const apiUrl = import.meta.env.VITE_API_URL;
+import { toast } from "react-toastify"
+// const apiUrl = import.meta.env.VITE_API_URL;
 
 const Profile = () => {
     
     
     const [userData,setUserData] = useState({})
     const [updateUser,setupdateUser] = useState(false)
+    const img = useRef()
+    const [formData, setFormData] = useState({
+        name: '',
+        email:'',
+        place:'',
+        file: null,
+    });
 
-
+    const imageSrc = formData.file ? URL.createObjectURL(formData.file) : (userData?.image || avatar );
 
     const getServiceList =async ()=>{
         await usersGet('/profile')
@@ -20,37 +28,203 @@ const Profile = () => {
         })
     }
 
+    const updateOpen = ()=>{
+        setupdateUser(true);
+        setFormData({
+            name: userData?.name,
+            email: userData?.email,
+            place: userData?.place,
+        });
+    }
+    const updateCancel = ()=>{
+        setupdateUser(false);
+        setFormData({
+            name: '',
+            email:'',
+            place:'',
+            file: null,
+        });
+    }
+
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        console.log(file);
+        setFormData(prevFormData => ({
+            ...prevFormData,
+            file
+        }));
+    };
+
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+        setFormData(prevFormData => ({
+            ...prevFormData,
+            [name]: value
+        }));
+    };
+
+    const handleSubmit=async(event)=>{
+        event.preventDefault()
+        const error = await errorHandle()
+        if(!error){
+            const img =true;
+            console.log(formData);
+            await usersPatch('/editProfile',formData,img).then((res)=>{
+                setUserData(res.userData)
+            }).catch((error)=>{
+                console.log(error);
+            })
+            toast.success('llllll')
+        }
+    }
+
+    const errorHandle = () => {
+        const { name, email,file,place } = formData;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if(name !== userData.name || email !== userData.email|| file || place){
+            if(name.trim().length < 2){
+                toast.error('Enter a valid name')
+                return true
+            }else if(!emailRegex.test(email)){
+                toast.error('Enter a valid email address')
+                return true
+            }else{
+                console.log('llllllllllll');
+                return false
+            }
+
+        }else{
+            toast.info("Did't change anything")
+            return true
+        }
+    }
+
+    const keralaDistricts = [
+        "Alappuzha",
+        "Ernakulam",
+        "Idukki",
+        "Kannur",
+        "Kasaragod",
+        "Kollam",
+        "Kottayam",
+        "Kozhikode",
+        "Malappuram",
+        "Palakkad",
+        "Pathanamthitta",
+        "Thiruvananthapuram",
+        "Thrissur",
+        "Wayanad",
+    ];
+        
 
     useEffect(() => {
         getServiceList()
     }, []);
   return (
-<div>
+    <div className="w-full">
+        
     
-</div>   
-    <div className="w-full h-full  bg-white border border-gray-100 rounded-lg shadow">
-        <div className="flex flex-col items-center pb-10 mt-12">
-            <div className="rounded-full shadow-slate-500 mb-4">
-                <img className="w-40 h-40 p-2 mb-3 rounded-full object-cover  shadow-lg" src={avatar} alt="loading..."/>
-            </div>
-            <p className="mb-3 text-2xl font-medium text-gray-900 uppercase underline">MR: {userData.name}....</p>
-            
-            
-            <p className="mb-1 text-lg font-serif text-gray-900 ">EM: {userData.email}</p>
-            <p className="mb-1 text-lg font-semibold text-gray-900 uppercase">PH: +91 {userData.phone}</p>
-            <p className="mb-1 text-lg  text-gray-900 uppercase">₹: {userData.wallet}</p>
+        <div className="w-full h-full  bg-white border border-gray-100 rounded-lg shadow">
+            <div className="flex flex-col items-center pb-10 mt-12">
+                <div className="rounded-full shadow-slate-500 mb-4">
+                    <img className="w-40 h-40 p-2 mb-3 rounded-full object-cover  shadow-lg" src={imageSrc} alt="loading..."/>
+                </div>
+                <p className="mb-3 text-2xl font-medium text-gray-900 uppercase underline">MR: {userData.name}....</p>
+                <div className="shadow-lg p-4 border-gray-500 rounded-md">
+                    <p className="mb-1 text-lg font-serif text-gray-900 ">Email  : <span className="text-base text-gray-700">{userData.email}</span></p>
+                    <p className="mb-1 text-lg font-mono text-gray-900  ">Phone   : <span className="text-base text-gray-700">+91 {userData.phone}</span></p>
+                    <p className="mb-1 text-lg font-serif text-gray-900 ">Wallet : <span className="text-base text-gray-700">₹ {userData.wallet}.00</span></p>
+                    {/* <p className="mb-1 text-lg  text-gray-900 uppercase">₹: {userData.wallet}</p> */}
 
-            <span className="text-sm text-gray-500">{apiUrl}</span>
-            <div className="flex mt-4 space-x-3 md:mt-6">
-                <button href="#" className="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-gray-600 rounded-lg hover:bg-gray-700" onClick={()=>setupdateUser(true)}>Update Profile</button>
-                {/* <button href="#" className="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100">Message</button> */}
+                </div>
+{/* 
+                <input className="text-sm text-gray-500 border-none " placeholder={apiUrl+'/register?referalNumber='+userData.referalNumber}/> */}
+                <div className="flex mt-4 space-x-3 md:mt-6">
+                    <button href="#" className="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-gray-600 rounded-lg hover:bg-gray-700" onClick={()=>updateOpen()}>Update Profile</button>
+                    {/* <button href="#" className="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100">Message</button> */}
+                </div>
             </div>
         </div>
-    </div>
-    // {!updateUser ? 
-    
-    // }
+         {updateUser ?
+                                    <div className="fixed inset-0 z-10 overflow-y-auto bg-slate-200">
+                                              <div className="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+                                                  <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
+                                                      &#8203;
+                                                  </span>
+  
+                                                  <div className="relative inline-block p-4 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl sm:max-w-sm rounded-xl -bg-gray-900 sm:my-8 sm:w-full sm:p-6">
+  
+                                                        <h1 className="text-center">kkkkkkkkkkkkkk</h1>
+                                                      <form onSubmit={handleSubmit} encType="multipart/form-data">
+                                                        <div className="rounded-full shadow-slate-500 mb-4 flex items-center justify-center flex-col">
+                                                            <img className="w-40 h-40 p-2 mb-3 rounded-full object-cover shadow-lg" src={imageSrc} onClick={()=>img.current.click()} alt="loading..."/>
+                                                            <input type="file" className="hidden" name="file" ref={img} onChange={handleFileChange}/>
+                                                        <p>change img</p>
+                                                        </div>
+  
+                                                          <div className="flex items-center justify-between w-full mt-5 gap-x-2">
+                                                              <input
+                                                                  type="text" minLength={3}
+                                                                  id="name" name="name" onChange={handleChange} value={formData?.name} placeholder={formData?.name}
+                                                                  className="flex-1 block h-10 px-4 text-sm text-gray-700 bg-white border border-gray-200 rounded-md -bg-gray-900 -text-gray-300 -border-gray-700 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 -focus:border-blue-300 focus:outline-none focus:ring"
+                                                              />
+                                                          </div>
+                                                          <div className="flex items-center justify-between w-full mt-5 gap-x-2">
+                                                              <input
+                                                                  id="email" name="email" type="email" onChange={handleChange} value={formData.email} placeholder={formData.email}
+                                                                  className="flex-1 block h-10 px-4 text-sm text-gray-700 bg-white border border-gray-200 rounded-md -bg-gray-900 -text-gray-300 -border-gray-700 focus:border-blue-400 focus:ring-blue-300 focus:ring-opacity-40 -focus:border-blue-300 focus:outline-none focus:ring"
+                                                              />
+                                                          </div>
+  
+                                                          <div className="flex items-center justify-between w-full mt-5 gap-x-2">
+                                                              <select
+                                                                  id="Place"
+                                                                  name="Place"
+                                                                  autoComplete="Place"
+                                                                  className="block w-56 text-center rounded-md  border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                                                                  value={formData.place}
+                                                                  onChange={(e) =>
+                                                                      setFormData({ ...formData, place: e.target.value })
+                                                                  }
+                                                              >
+                                                                  <option value="" disabled hidden>
+                                                                      {formData.place ? formData.place : "Select a place"}
+                                                                  </option>
+                                                                  {keralaDistricts.map((district) => (
+                                                                      <option key={district} value={district}>
+                                                                          {district}
+                                                                      </option>
+                                                                  ))}
+                                                              </select> 
+                                                          </div>
+  
+  
+                                                          <div className="mt-4 sm:flex sm:items-center sm:justify-between sm:mt-6 sm:-mx-2">
+                                                              <button
+                                                                  onClick={updateCancel}
+                                                                  className="px-4 sm:mx-2 w-full py-2.5 text-sm font-medium -text-gray-200 -border-gray-700 -hover:bg-gray-800 tracking-wide text-gray-700 capitalize transition-colors duration-300 transform border border-gray-200 rounded-md hover:bg-gray-100 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-40"
+                                                              >
+                                                                  Cancel
+                                                              </button>
+  
+                                                              <button
+                                                                  type="submit" className="px-4 sm:mx-2 w-full py-2.5 mt-3 sm:mt-0 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-md hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+                                                              >
+                                                                  {/* {loading ? <span className="loading loading-dots loading-xs"> </span> : 'Confirm'} */}Confirm
+                                                              </button>
+                                                          </div>
+                                                      </form>
+                                                  </div>
+  
+                                              </div>
+                                          </div> : 
+         <div>
 
+
+         </div>
+         } 
+
+    </div>  
   )
 }
 
