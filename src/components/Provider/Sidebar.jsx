@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { FaHome } from 'react-icons/fa'
 import { GrPowerShutdown } from 'react-icons/gr'
+import {AiOutlineUser} from 'react-icons/ai'
 import useWidthSize from "../../utils/useWidthSize";
 import NavItem from '../NavItem'
 const Sidebar = () => {
@@ -55,13 +56,12 @@ const Sidebar = () => {
 
                     </div>
                     <NavItem icon={<FaHome/>} name={"HOME"} path={'/provider'} />
-                    {/* <NavItem icon={faUser} name={"PROFILE"} path={'/provider/profile'} /> */}
                     {/* <NavItem icon={faComment} name={'CHAT'} path={'/provider/chat'} /> */}
                     {/* <NavItem icon={faServer} name={"SERVICES"} path={'/provider/services'} /> */}
                     {/* <NavItem icon={faImage} name={'ADD POSTS'} path={'/provider/addpost'} /> */}
                     {/* <NavItem icon={faBagShopping} name={"ORDERS"} path={'/provider/orders'} /> */}
                     {/* <NavItem icon={faMoneyCheck} name={"UPGRADE"} path={'/provider/upgrade'} /> */}
-                    
+                    <NavItem icon={<AiOutlineUser/>} name={"PROFILE"} path={'/provider/profile'} />
                     <NavItem icon={<GrPowerShutdown/>} name={"LOGOUT"} path={'/provider/login'} />
 
 
@@ -96,8 +96,6 @@ const Sidebar = () => {
                         </div>
                        
                     </div>
-                </div>
-                <div className="flex-grow p-4">
                 </div>
             </div>
             {isOpen && (

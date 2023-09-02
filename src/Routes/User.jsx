@@ -15,6 +15,7 @@ const User = () => {
   return (
     <Routes>
         <Route path="/profile" element={userAuth ? <ProfilePage/> : <Navigate to='/login' /> }/>
+        <Route path="/providers" element={userAuth ? <ProfilePage/> : <Navigate to='/login' /> }/>
         <Route path="/otpLogin" element={userAuth ? <Navigate to='/' /> : <OtpLogin role='user'/> }/>
         <Route path="/login" element={userAuth ? <Navigate to='/' /> : <Login role='user'/> }/>
         <Route path="/register"  element={userAuth ? <Navigate to='/' /> : <Register />}/>

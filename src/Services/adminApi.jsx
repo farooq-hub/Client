@@ -19,6 +19,11 @@ const adminGet =async (url) => {
          toast.error(error?.response?.data?.errMsg)
       } else if (error.response?.status === 402) {
          toast.warn(error?.response?.data?.errMsg)
+      }
+      else if (error.response?.status === 403) {
+         toast.warn(error?.response?.data?.errMsg)
+      }else if (error.response?.status === 404) {
+         toast.warn(error?.response?.data?.errMsg)
       }else if (error.response?.status === 504) {
         toast.warn(error?.response?.data?.errMsg)
       }else if (error.response?.status === 500) {
@@ -43,6 +48,10 @@ const adminPost =async (url,formData) => {
       if (error.response?.status === 401) {
          toast.error(error?.response?.data?.errMsg)
       } else if (error.response?.status === 402) {
+         toast.warn(error?.response?.data?.errMsg)
+      }else if (error.response?.status === 403) {
+         toast.warn(error?.response?.data?.errMsg)
+      }else if (error.response?.status === 404) {
          toast.warn(error?.response?.data?.errMsg)
       }
       else if (error.response?.status === 500) {
@@ -73,6 +82,11 @@ const adminPatch =async (url,formData,img) => {
       if (error.response?.status === 401) {
          toast.error(error?.response?.data?.errMsg)
       } else if (error.response?.status === 402) {
+         toast.warn(error?.response?.data?.errMsg)
+      }else if (error.response?.status === 403) {
+         toast.warn(error?.response?.data?.errMsg)
+      }
+      else if (error.response?.status === 404) {
          toast.warn(error?.response?.data?.errMsg)
       }else if (error.response?.status === 504) {
         toast.warn(error?.response?.data?.errMsg)

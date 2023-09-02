@@ -1,4 +1,3 @@
-import React from 'react'
 import Sidebar from '../../components/User/Sidebar'
 import Profile from '../../components/User/profile'
 

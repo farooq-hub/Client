@@ -4,14 +4,18 @@ import useSize from '../../utils/useWidthSize'
 import NavItem from "../NavItem";
 import { FaHome } from 'react-icons/fa'
 import { FiLogIn } from 'react-icons/fi'
-import { GrPowerShutdown } from 'react-icons/gr'
+import {  GrPowerShutdown } from 'react-icons/gr'
+import { HiOutlineUserGroup } from 'react-icons/hi'
 import {AiOutlineUser} from 'react-icons/ai'
+import { useLocation } from "react-router-dom";
 
 
 
 const Sidebar = () => {
 
     const [isOpen, setIsOpen] = useState(false);
+    // const [active,setActive] = useState(true)
+    const location = useLocation()
     const widthSize = useSize();
     const {token} = useSelector(state => state.user)
     const toggleSidebar = () => {
@@ -60,14 +64,14 @@ const Sidebar = () => {
                         <h1 className="font-sans font-black text-slate-900 text-3xl ">ELITE</h1>
                         <p className="text-sm font-semibold pb-6">Lets make..</p>
                     </div>
-                    <NavItem icon={<FaHome/>} name={"HOME"} path={'/'} />
-                    {/* <NavItem icon={faWeightHanging} name={"PROVIDERS"} path={'/user/providers'} /> */}
+                    <NavItem icon={<FaHome/>} active={location.pathname == '/'?true:false} name={"HOME"} path={'/'} />
+                    <NavItem icon={<HiOutlineUserGroup/>}  active={location.pathname == '/providers'?true:false} name={"PROVIDERS"} path={'/providers'} />
                     {/* <NavItem icon={faComment} name={'CHAT'} path={'/chat'} /> */}
                     {/* <NavItem icon={faUser} name={"PROFILE"} path={'/profile'} /> */}
                     {/* <NavItem icon={faCircleInfo} name={'MORE'} path={'/more'} /> */}
                     {/* <NavItem icon={faHandshakeAngle} name={'HELP'} path={'/help'} /> */}
                     {token ?
-                        <NavItem icon={<AiOutlineUser/>} name={'PROFILE'} path={'/profile'} />
+                        <NavItem icon={<AiOutlineUser/>} active={location.pathname == '/profile'?true:false} name={'PROFILE'} path={'/profile'} />
                         : 
                         <></>
                     }

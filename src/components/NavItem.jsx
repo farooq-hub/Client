@@ -8,7 +8,7 @@ import { providerLogout } from '../store/slice/provider';
 
 
 
-const  NavItem = ({icon,name,path}) => {
+const  NavItem = ({icon,name,path,active}) => {
     const dispatch = useDispatch()
     const navigate = useNavigate();
 
@@ -31,10 +31,10 @@ const  NavItem = ({icon,name,path}) => {
 
     return(
         <>
-            <div onClick={handleRoute} className="flex  items-center justify-between p-4 hover:bg-gray-400 cursor-pointer ">
-                <p className="flex items-center space-x-2" href="/admin/brand-dashboard">
+            <div onClick={handleRoute} className={`flex  items-center justify-between p-4 hover:bg-gray-400 cursor-pointer text-black ${active?'bg-gray-500 text-white':''}`}>
+                <p className="flex items-center space-x-2 " href="/admin/brand-dashboard">
                     {icon}
-                    <span className="text-black font-bold">{name}</span>
+                    <span className=" font-bold">{name}</span>
                 </p>
             </div>
         </>
@@ -45,6 +45,8 @@ NavItem.propTypes = {
     icon: PropTypes.object.isRequired, // Define the expected type and mark it as required
     name: PropTypes.string.isRequired,
     path: PropTypes.string.isRequired, // Define the expected type and mark it as required
+    active: PropTypes.bool.isRequired, // Define the expected type and mark it as required
+
   };
 
 export default NavItem;
