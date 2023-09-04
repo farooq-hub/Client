@@ -45,7 +45,7 @@ NavItem.propTypes = {
     icon: PropTypes.object.isRequired, // Define the expected type and mark it as required
     name: PropTypes.string.isRequired,
     path: PropTypes.string.isRequired, // Define the expected type and mark it as required
-    active: PropTypes.bool.isRequired, // Define the expected type and mark it as required
+    active: PropTypes.bool, // Define the expected type and mark it as required
 
   };
 

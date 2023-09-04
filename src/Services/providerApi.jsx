@@ -35,11 +35,19 @@ const providerGet =async (url) => {
    }
 }
 
-const providerPost =async (url,formData) => { 
+const providerPost = async (url,formData,img) => { 
    try {
-      console.log('/provider'+ url,formData ,typeof formData);
+      console.log(formData,'-----');
+      
       const token = getToken();
-      const response = await axiosInstance.post('/provider' + url, formData,token ? { headers: { Authorization: `Bearer ${token}`}} :{});
+      const response = await axiosInstance.post('/provider' + url,formData,token ? {
+         headers: {
+           Authorization: `Bearer ${token}`,
+          'Content-Type': img ? 'multipart/form-data' : 'application/json'
+         }
+      }:{}); 
+      response.data.msg ? toast.success(response?.data?.msg) : null
+
       return response.data        
    } catch (error) {
       if (error.response?.status === 401) {

@@ -14,7 +14,6 @@ import { useLocation } from "react-router-dom";
 const Sidebar = () => {
 
     const [isOpen, setIsOpen] = useState(false);
-    // const [active,setActive] = useState(true)
     const location = useLocation()
     const widthSize = useSize();
     const {token} = useSelector(state => state.user)

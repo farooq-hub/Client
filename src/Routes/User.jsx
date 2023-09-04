@@ -6,6 +6,7 @@ import Register from "../components/User/Register"
 import { useSelector } from "react-redux";
 import OtpLogin from "../components/OtpLogin";
 import ProfilePage from "../pages/User/Profile";
+import ProvidersPage from "../pages/User/Providers";
 
 
 
@@ -15,7 +16,7 @@ const User = () => {
   return (
     <Routes>
         <Route path="/profile" element={userAuth ? <ProfilePage/> : <Navigate to='/login' /> }/>
-        <Route path="/providers" element={userAuth ? <ProfilePage/> : <Navigate to='/login' /> }/>
+        <Route path="/providers" element={userAuth ? <ProvidersPage/> : <Navigate to='/login' /> }/>
         <Route path="/otpLogin" element={userAuth ? <Navigate to='/' /> : <OtpLogin role='user'/> }/>
         <Route path="/login" element={userAuth ? <Navigate to='/' /> : <Login role='user'/> }/>
         <Route path="/register"  element={userAuth ? <Navigate to='/' /> : <Register />}/>

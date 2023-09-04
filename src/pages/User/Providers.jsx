@@ -1,5 +1,6 @@
 import React from 'react'
 import Sidebar from '../../components/User/Sidebar'
+import Providers from '../../components/User/Providers'
 
 function ProvidersPage() {
   return (
@@ -7,7 +8,7 @@ function ProvidersPage() {
     <Sidebar />
    
     <div className="flex md:ml-64 lg:ml-64">
-      ggg
+      <Providers/>
     </div>
 </div>
   )

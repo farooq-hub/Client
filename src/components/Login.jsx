@@ -65,6 +65,8 @@ function Login({role}) {
                         const name = response?.name;
                         const token = response?.token;
                         const role = response?.role;
+                        const providerId = response?.providerId;
+
                         console.log(role, name, token);
                         if (role === 'user') {
                             dispatch(userLogin({ name, token, role}));
@@ -77,7 +79,7 @@ function Login({role}) {
                             toast.success(response.msg)
                             navigate('/admin')
                         } else if (role === 'provider') {
-                            dispatch(providerLogin({ name, token, role }));
+                            dispatch(providerLogin({ name, token, role, providerId }));
                             toast.success(response.msg)
                             navigate('/provider/home')
                         }

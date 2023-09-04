@@ -1,12 +1,14 @@
 import { useState } from "react";
-import { FaHome } from 'react-icons/fa'
+import { FaHome,FaIdCard } from 'react-icons/fa'
 import { GrPowerShutdown } from 'react-icons/gr'
 import {AiOutlineUser} from 'react-icons/ai'
 import useWidthSize from "../../utils/useWidthSize";
 import NavItem from '../NavItem'
+import { useLocation } from "react-router-dom";
 const Sidebar = () => {
    
     const [isOpen, setIsOpen] = useState(false);
+    const location = useLocation()
     const widthSize = useWidthSize();
     const toggleSidebar = () => {
         setIsOpen(true);
@@ -55,13 +57,13 @@ const Sidebar = () => {
                         <p className="text-sm font-semibold pb-6">Lets make..</p>
 
                     </div>
-                    <NavItem icon={<FaHome/>} name={"HOME"} path={'/provider'} />
-                    {/* <NavItem icon={faComment} name={'CHAT'} path={'/provider/chat'} /> */}
+                    <NavItem icon={<FaHome/>} active={location.pathname == '/provider'?true:false} name={"HOME"} path={'/provider'} />
+                    {/* <NavItem icon={<FaIdCard/>} name={'CHAT'} path={'/provider/chat'} /> */}
                     {/* <NavItem icon={faServer} name={"SERVICES"} path={'/provider/services'} /> */}
-                    {/* <NavItem icon={faImage} name={'ADD POSTS'} path={'/provider/addpost'} /> */}
+                    <NavItem icon={<FaIdCard/>} active={location.pathname == '/provider/post'?true:false} name={'POSTS'} path={'/provider/post'} />
                     {/* <NavItem icon={faBagShopping} name={"ORDERS"} path={'/provider/orders'} /> */}
                     {/* <NavItem icon={faMoneyCheck} name={"UPGRADE"} path={'/provider/upgrade'} /> */}
-                    <NavItem icon={<AiOutlineUser/>} name={"PROFILE"} path={'/provider/profile'} />
+                    <NavItem icon={<AiOutlineUser/>} name={"PROFILE"} active={location.pathname == '/provider/profile'?true:false} path={'/provider/profile'} />
                     <NavItem icon={<GrPowerShutdown/>} name={"LOGOUT"} path={'/provider/login'} />
 
 
