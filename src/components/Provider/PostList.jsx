@@ -1,41 +1,32 @@
 import { useEffect, useState } from "react";
-import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { providerGet, providerPost } from "../../Services/providerApi";
-import { RiDeleteBin6Line } from "react-icons/ri";
-import { GrPrevious,GrNext } from "react-icons/gr";
+import { RiDeleteBin6Line, RiEditLine, RiEyeLine } from "react-icons/ri";
+import SinglePost from "../SinglePost";
+import ImageSlider from "../ImageSlider";
+import { useSelector } from "react-redux";  
+
 
 
 const Post = () => {
 
-    const providerId = useSelector((state) => state.provider.providerId);
-
     const [loading, setLoading] = useState(false);
     const [postsList, setPostsLisit] = useState([]);
     const [isOpen, setIsOpen] = useState(false);
+    const [openPost, setIOpenPost] = useState(false);
+    const [selectedPost, setSelectedPost] = useState({});
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [searchText, setSearchText] = useState('');
     const [error, setError] = useState('');
     const [formData, setFormData] = useState({
-        providerId,
         caption: '',
         tagline:'',
         postImages: [],
 
     });
-    const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-    const nextImage = () => {
-        console.log(currentImageIndex);
-        setCurrentImageIndex((prevIndex) => Math.floor((prevIndex + 1) % formData.postImages.length));
-      };
-    
-      const prevImage = () => {
-        setCurrentImageIndex((prevIndex) =>
-          prevIndex === 0 ? Math.floor(formData.postImages.length - 1) : Math.floor(prevIndex - 1)
-        );
-      };
-  
+  const providerData = useSelector((state) => state.provider.providerData);
 
-    const [searchText, setSearchText] = useState('');
 
     const validateFormData = () => {
         const { postImages, caption } = formData;
@@ -49,8 +40,8 @@ const Post = () => {
             setError('Add a Image for post')
             return true;
         }else if (postImages.length > 10) {
-            toast.warn('Max Images only 10');
-            setError('Max Images only 10')
+            toast.warn('Maximum 10 Images only allowed');
+            setError('Maximum 10 Images only allowed')
             return true;
         }else {
             setError('')
@@ -67,15 +58,23 @@ const Post = () => {
         }));
     };
 
+    const isImage = (file) => {
+        const acceptedImageTypes = ["image/jpeg", "image/jpg", "image/avif", "image/png", "image/gif" ,"image/webp"]; // Add more types if necessary
+        return acceptedImageTypes.includes(file.type);
+    };
+
     const handleFileChange = (event) => {
-        let files = []
-        for(let i=0;i<event.target.files.length ; i++){
-            files.push(event.target.files[i])
+        let files = Array.from(event.target.files)
+        const imageFiles = files.filter(isImage);
+        if (imageFiles.length == files.length){
+            setFormData((prevFormData) => ({
+              ...prevFormData,
+              postImages: files,
+            }));
+        }else{
+            toast.warn('Unsupported file found(Only Image files is allowed)!');
+            setError('Unsupported file found(Only Image files is allowed)!')
         }
-        setFormData((prevFormData) => ({
-          ...prevFormData,
-          postImages: files,
-        }));
       };
       
 
@@ -86,11 +85,18 @@ const Post = () => {
             setLoading(true);
             let img = true
             try {
-                await providerPost('/addPost',formData,img).then((res)=>{
-                    res && res.postData?setPostsLisit(prevPostsList => [...prevPostsList, res.postData]):''
-                    // addPostClose()
+                const form = new FormData();
+                form.append('caption',formData.caption)
+                form.append('tagline', formData.tagline)
+                formData.postImages.forEach((file) => {
+                    form.append('postImages', file);
+                });
+                console.log(form);
+                await providerPost('/post',form,img).then((res)=>{
+                    res && res.newPost?setPostsLisit(prevPostsList => [...prevPostsList, res.newPost]):''
+                    addPostClose()
                     setLoading(false);
-                    // setIsOpen(false);
+                    setIsOpen(false);
                 }).catch((error)=> {console.log(error)})
             } catch (error) {
                 console.log(error);
@@ -99,10 +105,9 @@ const Post = () => {
         }
     };
 
-
     const getServiceList = async () => {
         try {
-            await providerGet('/postsList').then((res)=>{
+            await providerGet('/post').then((res)=>{
                 setPostsLisit(res.postsList)
             }).catch((error)=>{
                 console.log(error);
@@ -114,13 +119,13 @@ const Post = () => {
     const addPostClose = ()=>{
         setIsOpen(false)
         setFormData({
-            providerId,
             caption: '',
             tagline:'',
             postImages: [],
         })
         setCurrentImageIndex(0)
     }
+
 
 
     useEffect(() => {
@@ -145,7 +150,7 @@ const Post = () => {
                                 <input
                                     type="search"
                                     className="relative h-10 m-0 -mr-0.5 block w-[1px] min-w-0 flex-auto rounded-l border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none -border-neutral-600 -text-neutral-200 -placeholder:text-neutral-200 -focus:border-primary"
-                                    placeholder="Search posts by tags"
+                                    placeholder="Search posts by taglins"
                                     aria-label="Search"
                                     aria-describedby="button-addon1"
                                     value={searchText}
@@ -157,52 +162,68 @@ const Post = () => {
                 </div>
 
                 <div className="flex flex-col mt-6">
-                    <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                    <div className="overflow-x-scroll">
                         <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-                            <div className="overflow-hidden border border-gray-200 -border-gray-700 md:rounded-lg">
-                                <table className="min-w-full divide-y divide-gray-200 -divide-gray-700">
-                                    <thead className="bg-gray-50 -bg-gray-800">
+                            <div className="overflow-hidden border border-gray-200 md:rounded-lg">
+                                <table className="min-w-full divide-y divide-gray-200 max-h-screen-sm  cursor-pointer">
+                                    <thead className="bg-gray-50 ">
                                         <tr>
-                                            <th className="px-1 text-sm text-gray-500 font-normal text-left rtl:text-right">No</th>
-                                            <th scope="col" className="py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 ">
+                                            <th className="px-1 text-sm text-gray-500 font-normal text-center ">No</th>
+                                            <th scope="col" className="py-3.5 text-sm font-normal text-center  text-gray-500">
                                                 Image
                                             </th>
-                                            <th scope="col" className="py-3.5 px-4 text-sm font-normal text-left rtl:text-right text-gray-500 ">
+                                            <th scope="col" className="py-3.5 px-4 text-sm font-normal text-center  text-gray-500">
+                                                <span>Status</span>
+                                            </th>
+                                            <th scope="col" className="py-3.5 px-4 text-sm font-normal text-center  text-gray-500">
                                                 <span>Likes</span>
                                             </th>
-                                            <th scope="col" className="py-3.5 px-4 text-sm font-normal text-left rtl:text-right text-gray-500 ">
+                                            <th scope="col" className="py-3.5 px-4 text-sm font-normal text-center  text-gray-500">
                                                 <span>Reports</span>
                                             </th>
-                                            <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 -text-gray-400">Action</th>
+                                            <th scope="col" className="py-3.5 px-4 text-sm font-normal text-center  text-gray-500">
+                                                <span>view</span>
+                                            </th>
+                                            <th scope="col" className="px-4 py-3.5 text-sm font-normal text-center  text-gray-500">Actions</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-gray-200 -divide-gray-700 -bg-gray-900">
+                                    <tbody className="divide-y divide-gray-200 -divide-gray-700  -bg-gray-900">
                                         {postsList?.length > 0 ? (
                                             postsList.filter((post) => post.tagline.includes(searchText)).map((post,i) => (
                                                 <tr key={post._id}>
-                                                    <td className="text-sm text-gray-500 font-normal">{i+1}</td>
-                                                    <td className="px-4  py-4 text-sm font-medium whitespace-nowrap ">
-                                                        <div>
-                                                            <img className="h-12 font-bold ml-9" src={post.postImages[0]} alt="Service Image" />
+                                                    <td className="text-sm text-center text-gray-500 font-normal  whitespace-nowrap">{i+1}</td>
+                                                    <td className="px-4 py-4 text-sm font-medium whitespace-nowrap ">
+                                                        <div className="flex justify-center ">
+                                                            <img className="h-12 w-16 font-bold ml-9" src={post.postImages[0]} alt="Service Image" />
                                                         </div>
                                                     </td>
-                                                    <td className="px-4 py-4 text-sm font-medium whitespace-nowrap">
+
+                                                    <td className="px-4 py-4 text-sm text-center font-medium whitespace-nowrap">
+                                                        <div>
+                                                        {!post?.isBanned ?<h2 className="text-green-700">Active</h2>: <h2 className="text-red-700">Banned</h2>}
+                                                            <h2 className="text-red-700"></h2>
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-4 py-4 text-center text-sm font-medium whitespace-nowrap">
                                                         <div>
                                                             <h2 className="text-black">{post?.likes.length}</h2>
                                                         </div>
                                                     </td>
-                                                    <td className="px-4 py-4 text-sm font-medium whitespace-nowrap">
+                                                    <td className="px-4 py-4 text-sm text-center font-medium whitespace-nowrap">
                                                         <div>
                                                             <h2 className="text-red-700">{post?.reports.length}</h2>
                                                         </div>
                                                     </td>
-                                                    <td className="px-4 py-4 text-sm font-medium whitespace-nowrap">
-                                                        <div>
-                                                            <h2 className="text-black">{post?.tagline}</h2>
-                                                        </div>
+
+                                                    <td className="px-4 py-4 text-center text-sm font-thin whitespace-nowrap">
+                                                        <button className="mr-2 mx-auto tracking-wide text-lg text-gray-700 capitaliz" onClick={()=>{
+                                                        setSelectedPost(post);
+                                                        setIOpenPost(true)
+                                                        }}><RiEyeLine/></button>
                                                     </td>
-                                                    <td className="px-4 py-4 text-sm font-thin whitespace-nowrap">
-                                                        <button className="px-4 py-2 mx-auto tracking-wide text-red-700 capitaliz"><RiDeleteBin6Line/></button>
+                                                    <td className="px-4 py-4 text-center text-sm font-thin whitespace-nowrap">
+                                                        {!post?.isBanned ?<button className="mr-2 mx-auto tracking-wide text-lg text-blue-700 capitaliz"><RiEditLine/></button>:''}
+                                                        <button className=" mx-auto tracking-wide text-lg text-red-700 capitaliz"><RiDeleteBin6Line/></button>
                                                     </td>
                                                 </tr>
                                             ))
@@ -238,7 +259,7 @@ const Post = () => {
                                         <img className=" rounded-lg w-58 h-48" src={URL.createObjectURL(formData.postImages[0])} alt="Selected" />
                                     ) : null}
                                 </div> */}
-                                    {formData.postImages.length > 0 ? 
+                                    {/* {formData.postImages.length > 0 ? 
                                         <div className="relative w-full max-w-screen-lg mx-auto">
                                             <div className="relative h-56 overflow-hidden">
                                             {Array.from(formData.postImages).map((image, index) => (
@@ -251,17 +272,23 @@ const Post = () => {
                                                 }`}
                                                 />
                                             ))}
-                                                <button
-                                                className="absolute left-1 top-1/2 transform -translate-y-1/2 p-2 bg-gray-200 opacity-70 rounded-full cursor-pointer"
-                                                onClick={prevImage}
-                                                ><GrPrevious /></button>
-                                                <button
-                                                className="absolute right-1 top-1/2 transform -translate-y-1/2 p-2 bg-gray-200 opacity-70 rounded-full cursor-pointer"
-                                                onClick={nextImage}
-                                                ><GrNext/></button>
+                                            { formData.postImages.length > 1 &&
+                                                <>
+                                                    <button
+                                                    className="absolute left-1 top-1/2 transform -translate-y-1/2 p-2 bg-gray-200 opacity-70 rounded-full cursor-pointer"
+                                                    onClick={prevImage}
+                                                    ><GrPrevious /></button>
+                                                    <button
+                                                    className="absolute right-1 top-1/2 transform -translate-y-1/2 p-2 bg-gray-200 opacity-70 rounded-full cursor-pointer"
+                                                    onClick={nextImage}
+                                                    ><GrNext/></button>
+                                                </>
+                                            }
+
                                             </div>
                                         </div>
-                                    :''}
+                                    :''} */}
+                                <ImageSlider images={formData.postImages} height={'h-56'} manageIndex={setCurrentImageIndex} currentIndex={currentImageIndex} />
                                 <form onSubmit={handleSubmit} encType="multipart/form-data">
                                     <div>
                                         <label htmlFor="Caption" className="block text-sm text-gray-500 -text-gray-300 mt-4">Caption</label>
@@ -276,6 +303,7 @@ const Post = () => {
                                         <input 
                                             type="file" 
                                             multiple
+                                            // accept="image/jpeg, image/jpg, image/avif, image/png, image/gif ,image/webp"
                                             onChange={handleFileChange}  
                                             name="postImages" 
                                             className="block w-full px-3 py-2 mt-2 text-sm text-gray-600 bg-white border border-gray-200 rounded-lg file:bg-gray-200 file:text-gray-700 file:text-sm file:px-4 file:py-1 file:border-none file:rounded-full -file:bg-gray-800 -file:text-gray-200 -text-gray-300 placeholder-gray-400/70 -placeholder-gray-500 focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 -border-gray-600 -bg-gray-900 -focus:border-blue-300" />
@@ -297,6 +325,9 @@ const Post = () => {
                         </div>
                     </div>
                 )}
+                {openPost?<SinglePost post={selectedPost} setSelectedPost={setSelectedPost} setIOpenPost={setIOpenPost} providerData={providerData}/>:''}
+
+
             </section>
         </>
 

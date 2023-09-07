@@ -41,7 +41,7 @@ const usersPatch =async (url,formData,img) => {
       const response = await axiosInstance.patch(url, formData, token ? {
          headers: {
            Authorization: `Bearer ${token}`,
-           ...(img ? { 'Content-Type': 'multipart/form-data' } : {})
+           'Content-Type': img ? 'multipart/form-data' : 'application/json'
          }
       }:{});      
       response.data.msg ? toast.success(response?.data?.msg) : null
