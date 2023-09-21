@@ -66,10 +66,11 @@ function Login({role}) {
                         const token = response?.token;
                         const role = response?.role;
                         const providerData = response?.providerData;
+                        const userData = response?.userData;
 
                         console.log(role, name, token);
                         if (role === 'user') {
-                            dispatch(userLogin({ name, token, role}));
+                            dispatch(userLogin({ userData, token, role}));
                             toast.success(response.msg)
                             navigate('/')
 

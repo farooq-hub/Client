@@ -1,165 +1,355 @@
 import { useEffect, useState } from "react";
 import  avatar  from "../assets/very_big_Luffy.jpg"
-import  back  from "../assets/pexels-sandra-filipe-7087668.jpg"
 import PropTypes from 'prop-types';
 import { IoMdClose } from "react-icons/io";
+import { AiFillHeart, AiOutlineHeart, AiOutlineSend,AiOutlineWarning } from "react-icons/ai";
+import { FiBookmark, FiSend } from "react-icons/fi";
+import { BsThreeDots } from "react-icons/bs";
+import { TbMessageCircle2 } from "react-icons/tb";
 import ImageSlider from "./ImageSlider";
-import { providerGet } from "../Services/providerApi";
+import { providerGet, providerPatch, providerPost } from "../Services/providerApi";
+import Spinner from "./Spinner";
+import Comment from "./Comment";
+import { adminGet } from "../Services/adminApi";
+import { usersGet, usersPatch, usersPost } from "../Services/userApi";
+import Button from "./customComponent/Button";
+import Modal from "./customComponent/Modal";
 
 
-const SinglePost = ({post,setSelectedPost,setIOpenPost,providerData})=> {
+const SinglePost = ({post,setPostsData,setSelectedPost,setIOpenPost,user,role})=> {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [postData, setPostData] = useState(post);
+    const [commentsList, setCommentsList] = useState([]);
+    const [comment, setComment] = useState('');
+    const [loading, setLoading] = useState(true);
+    const [waiting, setWaiting] = useState(false);
+    const [modal,setModal] = useState('')
 
-    const getPostDetails =async () => {
-        await providerGet(`/post-details?postId=${post._id}`).then((res)=>{
-            console.log(res);
-        }).catch((error)=>{
+    const getComments =async () => {
+        try {
+            const respons =  role === 'admin'? await adminGet(`/comment?postId=${post._id}`):role === 'provider'?await providerGet(`/comment?postId=${post._id}`):await usersGet(`/comment?postId=${post._id}`)
+            respons ? setCommentsList(respons.comments) : ''
+            setLoading(false)
+            console.log(respons);
+        } catch (error) {
             console.log(error);
-        })
-    } 
+        }
+    }
+
+    const postCommentProvider =async () => {
+            setWaiting(true)
+            await providerPost(`/comment?postId=${postData._id}`,{comment})
+            .then((res)=>{
+                setComment('')
+                console.log(res);
+                let newComment = res.newComment
+                if(newComment && role == 'provider'){
+                    newComment.provider =  []
+                    newComment.provider[0] =  user
+                    newComment.user = []
+                }else{
+                    newComment.user = []
+                    newComment.user[0] =  user
+                    newComment.provider = []
+                }  
+                newComment ? setCommentsList((prev)=>[...prev,newComment]):''
+                setWaiting(false)
+    
+            }).catch((err)=>console.log(err))
+            console.log(comment);
+        
+
+    }
+
+    const postCommentUser =async () => {
+
+            setWaiting(true)
+            await usersPost(`/comment?postId=${postData._id}`,{comment})
+            .then((res)=>{
+                setComment('')
+                console.log(res);
+                let newComment = res.newComment
+                if(newComment && role == 'provider'){
+                    newComment.provider =  []
+                    newComment.provider[0] =  user
+                    newComment.user = []
+                }else{
+                    newComment.user = []
+                    newComment.user[0] =  user
+                    newComment.provider = []
+                }  
+                newComment ? setCommentsList((prev)=>[...prev,newComment]):''
+                setWaiting(false)
+    
+            }).catch((err)=>console.log(err))
+            console.log(comment);
+        
+
+    }
+
+    const postReportUser =async () => {
+        if(!postData.reports.includes(user._id)){
+            setPostData((prev) => ({
+                ...prev,
+                reports: [...prev.likes,user._id], 
+            }));
+            setModal('')
+            await usersPatch(`/post/report?postId=${postData._id}`).then((res)=>{
+                console.log(res);
+                res && res.report == false ?setPostData((prev) => ({
+                    ...prev,
+                    reports: prev.reports.filter((reports) => reports !== user._id),
+                })) : ''
+            }).catch((err)=>{
+                console.log(err);
+            })
+        }
+    }
+    
+    const likePostProvider =async () => {
+
+        if(!postData.likes.includes(user._id)){
+            setPostData((prev) => ({
+                ...prev,
+                likes: [...prev.likes,user._id], 
+            }));
+            await providerPatch(`/post/like?postId=${postData._id}&toggle=true`).then((res)=>{
+                console.log(res);
+                res && res.like == false ?setPostData((prev) => ({
+                    ...prev,
+                    likes: prev.likes.filter((likeId) => likeId !== user._id),
+                })) : ''
+            }).catch((err)=>{
+                console.log(err);
+            })
+        }else{
+            setPostData((prev) => ({
+                ...prev, 
+                likes: prev.likes.filter((likeId) => likeId !== user._id), 
+            }));
+            await providerPatch(`/post/like?id=${user._id}&postId=${postData._id}&toggle=false`).then((res)=>{
+                res && res.unlike == false ?setPostData((prev) => ({
+                    ...prev, 
+                    likes: [...prev.likes,user._id], 
+                })) : ''
+            }).catch((err)=>{
+                console.log(err);
+            })
+        }
+        
+    }
+
+    const likePostUser =async () => {
+        if(!postData.likes.includes(user._id)){
+            setPostData((prev) => ({
+                ...prev,
+                likes: [...prev.likes,user._id], 
+            }));
+            await usersPatch(`/post?postId=${postData._id}&toggle=true`).then((res)=>{
+                console.log(res);
+                res && res.like == false ?setPostData((prev) => ({
+                    ...prev,
+                    likes: prev.likes.filter((likeId) => likeId !== user._id),
+                })) : ''
+            }).catch((err)=>{
+                console.log(err);
+            })
+        }else{
+            setPostData((prev) => ({
+                ...prev, 
+                likes: prev.likes.filter((likeId) => likeId !== user._id), 
+            }));
+            await usersPatch(`/post?postId=${postData._id}&toggle=false`).then((res)=>{
+                res && res.unlike == false ?setPostData((prev) => ({
+                    ...prev, 
+                    likes: [...prev.likes,user._id], 
+                })) : ''
+            }).catch((err)=>{
+                console.log(err);
+            })
+        }
+        
+    }
+
+    const closeModal = ()=>{
+        setSelectedPost ? setSelectedPost({}):'';
+        setIOpenPost(false);
+        setPostsData ? 
+            setPostsData((prev) =>
+                prev.map((data) => {
+                    data._id === postData._id?console.log(data._id === postData._id,postData,data):''
+                    if (data._id === postData._id){
+                        return postData;
+                    }    
+                    else return data
+                })):''
+    }
+
+
     useEffect(()=>{
+        getComments()
     },[])
 
     return (
-        // <>
-        //     <div className="fixed inset-0 z-10 overflow-y-auto">
-        //         <div
-        //             className="fixed inset-0 w-full h-full bg-black opacity-40"
-        //         ></div>
-        //         <div className="flex items-center min-h-screen px-4 py-8">
-        //             <div className="mx-auto mb-10 border-b-2 max-w-xl rounded-md z-10 bg-white ">
-        //                 <div className="bg-white  rounded-md">
-        //                     <div className="flex items-center px-4 py-3">
-        //                     <img className="h-8 w-8 rounded-full" src={providerData.profilePic ? providerData.profilePic : avatar}/>
-        //                     <div className="ml-3 ">
-        //                         <span className="text-sm font-semibold antialiased block leading-tight">{providerData.name}</span>
-        //                         <span className="text-gray-600 text-xs block">{providerData.location ? providerData.location : 'Kerala'}</span>
-        //                     </div>
-        //                     <button className="ms-auto text-xl" onClick={()=>{
-        //                         setSelectedPost({});
-        //                         setIOpenPost(false)
-        //                     }}><IoMdClose/></button>
-        //                     </div>
-        //                     <ImageSlider images={post.postImages} height={'max-h-full'} manageIndex={setCurrentImageIndex} currentIndex={currentImageIndex}/>
-
-        //                     {/* <img src={back} className="rounded-md"/> */}
-        //                     <div className="flex items-center justify-between mx-4 mt-3 mb-2 ">
-        //                     <div className="flex gap-5">
-        //                         <svg fill="#262626" height="24" viewBox="0 0 48 48" width="24"><path d="M34.6 6.1c5.7 0 10.4 5.2 10.4 11.5 0 6.8-5.9 11-11.5 16S25 41.3 24 41.9c-1.1-.7-4.7-4-9.5-8.3-5.7-5-11.5-9.2-11.5-16C3 11.3 7.7 6.1 13.4 6.1c4.2 0 6.5 2 8.1 4.3 1.9 2.6 2.2 3.9 2.5 3.9.3 0 .6-1.3 2.5-3.9 1.6-2.3 3.9-4.3 8.1-4.3m0-3c-4.5 0-7.9 1.8-10.6 5.6-2.7-3.7-6.1-5.5-10.6-5.5C6 3.1 0 9.6 0 17.6c0 7.3 5.4 12 10.6 16.5.6.5 1.3 1.1 1.9 1.7l2.3 2c4.4 3.9 6.6 5.9 7.6 6.5.5.3 1.1.5 1.6.5.6 0 1.1-.2 1.6-.5 1-.6 2.8-2.2 7.8-6.8l2-1.8c.7-.6 1.3-1.2 2-1.7C42.7 29.6 48 25 48 17.6c0-8-6-14.5-13.4-14.5z"></path></svg>
-        //                         <svg fill="#262626" height="24" viewBox="0 0 48 48" width="24"><path clipRule="evenodd" d="M47.5 46.1l-2.8-11c1.8-3.3 2.8-7.1 2.8-11.1C47.5 11 37 .5 24 .5S.5 11 .5 24 11 47.5 24 47.5c4 0 7.8-1 11.1-2.8l11 2.8c.8.2 1.6-.6 1.4-1.4zm-3-22.1c0 4-1 7-2.6 10-.2.4-.3.9-.2 1.4l2.1 8.4-8.3-2.1c-.5-.1-1-.1-1.4.2-1.8 1-5.2 2.6-10 2.6-11.4 0-20.6-9.2-20.6-20.5S12.7 3.5 24 3.5 44.5 12.7 44.5 24z" fillRule="evenodd"></path></svg>
-        //                         <svg fill="#262626" height="24" viewBox="0 0 48 48" width="24"><path d="M47.8 3.8c-.3-.5-.8-.8-1.3-.8h-45C.9 3.1.3 3.5.1 4S0 5.2.4 5.7l15.9 15.6 5.5 22.6c.1.6.6 1 1.2 1.1h.2c.5 0 1-.3 1.3-.7l23.2-39c.4-.4.4-1 .1-1.5zM5.2 6.1h35.5L18 18.7 5.2 6.1zm18.7 33.6l-4.4-18.4L42.4 8.6 23.9 39.7z"></path></svg>
-        //                     </div>
-        //                     <div className="flex">
-        //                         <svg fill="#262626" height="24" viewBox="0 0 48 48" width="24"><path d="M43.5 48c-.4 0-.8-.2-1.1-.4L24 29 5.6 47.6c-.4.4-1.1.6-1.6.3-.6-.2-1-.8-1-1.4v-45C3 .7 3.7 0 4.5 0h39c.8 0 1.5.7 1.5 1.5v45c0 .6-.4 1.2-.9 1.4-.2.1-.4.1-.6.1zM24 26c.8 0 1.6.3 2.2.9l15.8 16V3H6v39.9l15.8-16c.6-.6 1.4-.9 2.2-.9z"></path></svg>
-        //                     </div>
-        //                     </div>
-        //                     <div className="font-semibold text-sm mx-4 mt-2 mb-4">92,372 likes</div>
-        //                     <div className="font-semibold text-sm mx-4 mt-2 mb-4">{post.caption}</div>
-        //                 </div>
-        //             </div>
-        //         </div>
-        //     </div>
-        // </>
         <>
-
-<div className="fixed inset-0 flex items-center justify-center z-50 ">
-  <div className="modal-overlay fixed inset-0 bg-black opacity-50"></div>
-
-  <div className="modal-container bg-white   lg:mx-auto  rounded-lg shadow-lg z-50 mx-10 md:mx-16 ">
-    <div className="grid grid-cols-1 lg:grid-cols-3  lg:h-[500px] xl:h-[850px] w-full  h-full overflow-hidden lg:w-[900px]  xl:w-[1200px]">
-        <div className="lg:hidden items-center px-4 py-3 flex">
-            <img className="h-8 w-8 rounded-full" src={providerData.profilePic ? providerData.profilePic : avatar}/>
-            <div className="ml-3 ">
-                <span className="text-sm font-semibold antialiased block leading-tight">{providerData.name}</span>
-                <span className="text-gray-600 text-xs block">{providerData.location ? providerData.location : 'Kerala'}</span>
-            </div>
-            <button className="ms-auto text-xl" onClick={()=>{
-                setSelectedPost({});
-                setIOpenPost(false)
-            }}><IoMdClose/></button>
-        </div>
-        <div className="col-span-2 flex items-center bg-black">
-            <ImageSlider images={post.postImages} height={'max-h-full '} manageIndex={setCurrentImageIndex} currentIndex={currentImageIndex} object={'object-contain'}/>
-        </div>
-        <div className="lg:col-span-1">
-            <div className="lg:flex items-center px-4 py-3 hidden">
-                <img className="h-8 w-8 rounded-full" src={providerData.profilePic ? providerData.profilePic : avatar}/>
-                <div className="ml-3 ">
-                    <span className="text-sm font-semibold antialiased block leading-tight">{providerData.name}</span>
-                    <span className="text-gray-600 text-xs block">{providerData.location ? providerData.location : 'Kerala'}</span>
+            <div className="fixed inset-0 flex items-center justify-center z-50 max-h-screen">
+            <div className="modal-overlay fixed inset-0 bg-black opacity-50" onClick={closeModal}> 
+                <div className="flex justify-end">
+                    <button className="lg:mt-4 lg:mr-4 text-4xl text-white opacity-100 " onClick={closeModal}><IoMdClose/></button>
                 </div>
-                <button className="ms-auto text-xl" onClick={()=>{
-                    setSelectedPost({});
-                    setIOpenPost(false)
-                }}><IoMdClose/></button>
-            </div><hr/>
-            <div>
-            <div className="grid grid-cols-6 h-auto ">
-                <div className="h-10 t overflow-hidden p-[.2rem] bg-slate-400 w-10 mx-2 my-2 rounded-full col-span-1">
-                    <img className="rounded-full object-fill" src="https://images.unsplash.com/photo-1551122089-4e3e72477432?ixid=MXwxMjA3fDB8MHxzZWFyY2h8M3x8cnVieXxlbnwwfHwwfA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="" />
+            </div>
+
+            <div className="modal-container bg-white  lg:mx-auto  rounded-lg shadow-lg z-50 mx-10 lg:my-0 mt-5 mb-4  md:mx-16 max-h-screen overflow-y-scroll lg:overflow-auto">
+                <div className="grid grid-cols-1 lg:grid-cols-2 lg:max-h-550px] xl:max-h-[850px] w-full h-full  overflow-hidden lg:w-[900px]  xl:w-[1200px]">
+                    <div className="lg:hidden items-center px-4 py-3 flex">
+                        <img className="h-8 w-8 object-cover rounded-full" src={postData.providerId.profilePic ? postData.providerId.profilePic : avatar}/>
+                        <div className="ml-3 ">
+                            <span className="text-sm font-semibold antialiased block leading-tight">{postData.providerId.name}</span>
+                            <span className="text-gray-600 text-xs block">{postData.providerId.location ? postData.providerId.location : 'Kerala'}</span>
+                        </div>
+                        {role =='user'? 
+                            <button className="ms-auto " onClick={()=>setModal('report')}><BsThreeDots/></button>
+                        :''}
+                    </div>
+                    <div className="col-span-1 flex items-center bg-black">
+                        <ImageSlider images={postData.postImages} height={'max-h-full'} manageIndex={setCurrentImageIndex} currentIndex={currentImageIndex} object={'object-contain'}/>
+                    </div>
+                    <div className="col-span-1 h-full flex flex-col">
+                        <div className="lg:flex items-center px-4 py-3 hidden ">
+                            <img className="h-8 w-8 object-cover rounded-full" src={postData.providerId.profilePic ?postData.providerId.profilePic : avatar}/>
+                            <div className="ml-3 ">
+                                <span className="text-sm font-semibold antialiased block leading-tight">{postData.providerId.name}</span>
+                                <span className="text-gray-600 text-xs block">{postData.providerId.location ? postData.providerId.location : 'Kerala'}</span>
+                            </div>
+                            {role =='user'? 
+                            <button className="ms-auto " onClick={()=>setModal('report')}><BsThreeDots/></button>
+                        :''}
+                        </div><hr/>
+
+                        <div className=" max-h-64 lg:max-h-[20rem] overflow-y-scroll">
+                            <div className=''>
+                                <div className="grid grid-cols-6 h-auto ">
+                                    <div className="h-10 t overflow-hidden p-[.2rem] bg-gray-200 w-10 mx-2 my-2 rounded-full col-span-1">
+                                        <img className="rounded-full object-cover h-8" src={postData.providerId.profilePic ? postData.providerId.profilePic : avatar} alt="" />
+                                    </div>
+                                    <div className="col-span-5 mr-2 my-3 ">
+                                        <div className="">                    
+                                            <div className="flex items-center">
+                                                <p className="text-sm"><span className="mr-2 text-slate-900 font-semibold">{postData.providerId.name}.</span>{postData.caption}</p>
+                                            </div>
+                                        </div>               
+                                    </div>
+                                </div>
+                                {postData.tagline ?
+                                    <div className="grid grid-cols-6 h-auto">
+                                        <div className="h-10 t overflow-hidden p-[.2rem] bg-gray-200 w-10 mx-2 my-1 rounded-full col-span-1">
+                                            <img className="rounded-full object-fill h-8" src={postData.providerId.profilePic ? postData.providerId.profilePic : avatar} alt="" />
+                                        </div>
+                                        <div className="col-span-5 mr-2 my-3 ">
+                                            <div className="">                    
+                                                <div className="flex items-center">
+                                                    <p className="text-sm text-blue-600"><span className="mr-2 text-slate-900 font-semibold">{postData.providerId.name}.</span>{postData.tagline}</p>
+                                                </div>
+                                            </div>               
+                                        </div> 
+                                    </div>
+                                :''}
+                                <hr />
+                                {
+                                   loading ? <Spinner className={'my-4 h-12 w-12'}/> :
+                                   commentsList.length == 0 ? 
+                                    <div className="text-center my-6">
+                                        <p className="text-gray-500">No comments ...</p>
+                                    </div>
+                                   :commentsList.map((comment)=><Comment key={comment._id} comment={comment} userId={user._id} role={role} isBanned={postData.isBanned} setCommentsList={setCommentsList}/>)
+                                }
+                            </div>
+                        </div>
+                        <div className=" w-full my-auto bg-white">
+                            <div className="flex mx-2 my-3">
+                            <div className="group flex cursor-pointer relative">
+                                {role!='admin'&&
+                                    postData.likes.includes(user._id) ? 
+                                        <><AiFillHeart className="text-red-600 text-3xl mx-2 " onClick={role != 'admin'&& role == 'provider' ? likePostProvider:role =='user' ? likePostUser:''} />
+                                        <span className="group-hover:opacity-100 transition-opacity bg-gray-100 px-1  text-sm text-gray-900  absolute left-1/2 
+                                        -translate-x-1/2 translate-y-full opacity-0 m-4 mx-auto">Unlike</span></>
+                                        :<> <AiOutlineHeart className="text-black text-3xl mx-2 "  onClick={role != 'admin'&& role == 'provider' ? likePostProvider:role =='user' ? likePostUser:''}/> 
+                                        <span className="group-hover:opacity-100 transition-opacity bg-gray-100 px-1  text-sm text-gray-900  absolute left-1/2 
+                                        -translate-x-1/2 translate-y-full opacity-0 m-4 mx-auto">Like</span></>
+                                }
+                            </div>
+                            <div className="group flex cursor-pointer relative">
+                                <TbMessageCircle2 className="text-black  text-3xl  mx-2 " />
+                                <span className="group-hover:opacity-100 transition-opacity bg-gray-100 px-1  text-sm text-gray-900  absolute left-1/2 
+                                -translate-x-1/2 translate-y-full opacity-0 m-4 mx-auto">Comment</span>
+                            </div>                
+                            <div className="group flex cursor-pointer relative">
+                                <FiSend className="text-black text-3xl mx-2 " />
+                                <span className="group-hover:opacity-100 transition-opacity bg-gray-100 px-1  text-sm text-gray-900  absolute left-1/2 
+                                -translate-x-1/2 translate-y-full opacity-0 m-4 mx-auto">Share </span>
+                            </div>
+                            <div className="group flex cursor-pointer relative ms-auto">
+                                <FiBookmark className="text-black text-3xl mx-3 " />
+                                <span className="group-hover:opacity-100 transition-opacity bg-gray-100 px-1  text-sm text-gray-900  absolute left-1/2 
+                                -translate-x-1/2 translate-y-full opacity-0 m-4 mx-auto">Save</span>
+                            </div>
+
+                            </div>
+                            <div className="mx-2" >
+                                <p className="text-black text-[1.03rem] mx-2 leading-4">{postData.likes.length} likes</p>
+                                <p className="text-gray-500 text-[.8rem] mx-2 ">{new Date(postData.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</p>
+                            </div>                
+                            <div className="mx-4 mt-2 mb-1 flex items-center ">
+                                <div className="w-full pr-3">
+                                    <textarea className="w-full resize-none outline-none appearance-none max-h-[76px] " name="comment"  placeholder="Add a comment..." value={comment} onChange={(e)=>setComment(e.target.value.trim())} autoComplete="off" autoCorrect="off" />
+                                </div>
+                                {
+                                    comment.trim() && role!='admin' ?
+                                        <div className="ml-auto flex items-center">
+                                            {
+                                                waiting ? <Spinner className={'h-6 w-6'} /> :
+                                                <Button className="focus:outline-none border-none bg-transparent text-blue-600" handelEvent={role === 'user' ? postCommentUser:role==='provider' ?postCommentProvider:''}
+                                                content={<AiOutlineSend className="text-lg"/>}/>
+                                            }
+                                        </div>
+                                    :''
+                                }
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div className="col-span-5 mr-2 my-3">
-                    <p className="text-sm"><span className="mr-2 text-slate-900 font-semibold">Nirmala.</span>Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                     Expedita, maiores! Lorem ipsum, dolor sit amet consectetur adipisicing elit. Expedita, maiores!</p>
-                     <div className="flex">
-                        <p>11.2021</p>
-                        <div className="text-xs cursor-pointer flex h- w-6 transform transition-colors duration-200 hover:bg-gray-100 rounded-full items-center justify-center">
-              <svg className="w-4 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"></path></svg>
-            </div>
-                     </div>
-                        {/* <div className="font-medium">
-                            <a href="#" className="hover:underline text-sm">
-                            <small>Nirmala</small>
-                            </a>
-                        </div>
-                        <div className="text-xs">
-                            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Expedita, maiores!
-                        </div>
-                        <div className="flex justify-start items-center text-xs w-full">
-                        <div className="font-semibold text-gray-700 px-2 flex items-center justify-center space-x-1">
-                            <a href="#" className="hover:underline">
-                            <small>Like</small>
-                            </a>
-                        <small className="self-center">.</small>
-                            <a href="#" className="hover:underline">
-                            <small>Reply</small>
-                            </a>
-                        <small className="self-center">.</small>
-                            <a href="#" className="hover:underline">
-                            <small>15 hour</small>
-                            </a>
-                        </div>
-                        </div>
-                        */}
+                {modal ==='report' || modal ==='confirm'?<Modal modalBody={
+                    <div className="">
+                        <ul className="">
+                            <li className="flex items-center p-3 text-base font-bold text-gray-900 focus:bg-gray-400 hover:text-black transition duration-300 rounded-lg bg-gray-50 hover:bg-gray-200 group hover:shadow">
+                                <Button content={!postData.reports.includes(user._id)?'Report':"Reported"} handelEvent={!postData.reports.includes(user._id)?()=>setModal('confirm'):''} className={'text-red-600 flex-1 ml-3 whitespace-nowrap'} />
+                            </li>
+                            <li className="flex items-center p-3 text-base font-bold text-gray-900 hover:text-black transition duration-300 rounded-lg bg-gray-50 hover:bg-gray-200 group hover:shadow">
+                                <Button content={'Close'} className={'text-center flex-1 ml-3 whitespace-nowrap'} handelEvent={()=>setModal('')}/>
+                            </li>
+                        </ul>
+                    </div>
+                }/>:''}
+             { modal ==='confirm'?<Modal modalHeader={
+                <div className="flex items-center justify-center ">
+                    <Button content={<AiOutlineWarning className="text-3xl text-gray-500 m-4"/>}/>
                 </div>
-        
-        {/* <div className="self-stretch flex justify-center items-center transform transition-opacity duration-200 opacity-0 translate -translate-y-2 hover:opacity-100">
-          <a href="#" className="">
-            <div className="text-xs cursor-pointer flex h-6 w-6 transform transition-colors duration-200 hover:bg-gray-100 rounded-full items-center justify-center">
-              <svg className="w-4 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"></path></svg>
+             }
+             modalBody={
+                <div ><p className="text-xl font-bold text-center my-2">Are you sure !!!</p></div>
+             }
+             modalFooter={
+                <div className="flex items-center justify-center gap-4 my-4">
+                    <Button  type="button" className="text-white bg-red-600 hover:bg-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2"
+                    content={"Yes, I'm sure"}
+                    handelEvent={role === 'user'?postReportUser:""}/>
+                    <Button type="button" className="text-gray-500 bg-white hover:bg-gray-100 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 "
+                    content={'No, cancel'} handelEvent={()=>setModal('report')}/>
+                </div>}
+             />:''}
             </div>
-
-          </a>
-        </div> */}
-
-      </div>
             </div>
-
-            <div className="mt-6">
-                <button className="modal-close px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-600" onClick={()=>{
-                    setSelectedPost({});
-                    setIOpenPost(false)
-                }}>Close</button>
-            </div>
-
-        </div>
-    </div>
-
-  </div>
-</div>
-
-
-    </>
+        </>
     );
 
 }
@@ -167,8 +357,9 @@ SinglePost.propTypes = {
     post: PropTypes.object,
     setIOpenPost: PropTypes.func, 
     setSelectedPost: PropTypes.func, 
-    providerData: PropTypes.object
-
+    user: PropTypes.object,
+    setPostsData : PropTypes.func,
+    role : PropTypes.string
 };
 
 

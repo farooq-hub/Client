@@ -3,7 +3,7 @@ import { GrNext, GrPrevious } from 'react-icons/gr';
 
 
 
-const ImageSlider = ({images,height,width,manageIndex,currentIndex,object}) => {
+const ImageSlider = ({images,height,width,manageIndex,currentIndex,object,onClick}) => {
 
 
     const nextImage = () => {
@@ -26,6 +26,7 @@ const ImageSlider = ({images,height,width,manageIndex,currentIndex,object}) => {
                     key={index}
                     src={image instanceof File ? URL.createObjectURL(image) :  image}
                     alt="Slider Image"
+                    onClick={onClick?onClick:''}
                     className={`w-full h-auto  top-0 left-0 transition-opacity duration-500 ${object?object:''} ease-in-out ${
                         index === currentIndex ? 'opacity-100' : 'opacity-0 absolute'
                     }`}

@@ -91,7 +91,7 @@ const Sidebar = () => {
 
                             <button
                                 onClick={toggleSidebar}
-                                className="block text-gray-500 hover:text-white focus:text-white focus:outline-none md:hidden"
+                                className="block text-gray-500 hover:text-black focus:text-white focus:outline-none md:hidden"
                             >
                                 <svg
                                     className="w-6 h-6"

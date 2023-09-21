@@ -4,7 +4,7 @@ import {  toast } from 'react-toastify';
 const getToken = ()=>{
    const storedAdmin = localStorage.getItem('persist:adminAuth');
    const admin = JSON.parse(storedAdmin)
-   const token = admin.token.substring(1, admin.token.length - 1)
+   const token = admin.token.substring(1, admin.token.length-1)
    return token
 }
 

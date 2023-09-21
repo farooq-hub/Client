@@ -1,23 +1,31 @@
 import { useEffect, useState } from "react";
 import { toast } from 'react-toastify';
-import { providerGet, providerPost } from "../../Services/providerApi";
+import { providerDelete, providerGet, providerPost } from "../../Services/providerApi";
 import { RiDeleteBin6Line, RiEditLine, RiEyeLine } from "react-icons/ri";
+import { BiBlock } from "react-icons/bi";
 import SinglePost from "../SinglePost";
 import ImageSlider from "../ImageSlider";
 import { useSelector } from "react-redux";  
+import PostUpdate from "./PostUpdate";
+import PropTypes from 'prop-types';
+import { adminGet, adminPatch } from "../../Services/adminApi";
 
 
 
-const Post = () => {
+const Post = ({providerId,setProviderId,setPostOpen}) => {
 
     const [loading, setLoading] = useState(false);
-    const [postsList, setPostsLisit] = useState([]);
+    const [postsList, setPostsList] = useState([]);
     const [isOpen, setIsOpen] = useState(false);
     const [openPost, setIOpenPost] = useState(false);
+    const [postEdit, setPostEdit] = useState(false);
+    const [editPost, setEditPost] = useState({});
     const [selectedPost, setSelectedPost] = useState({});
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [confirmAction, setConfirmAction] = useState(false)
     const [searchText, setSearchText] = useState('');
     const [error, setError] = useState('');
+    const [bannedPost, setBannedPost] = useState({});
     const [formData, setFormData] = useState({
         caption: '',
         tagline:'',
@@ -49,7 +57,6 @@ const Post = () => {
         }
     };
 
-
     const handleChange = (event) => {
         const { name, value } = event.target;
         setFormData(prevFormData => ({
@@ -71,13 +78,13 @@ const Post = () => {
               ...prevFormData,
               postImages: files,
             }));
+            setCurrentImageIndex(0)
         }else{
             toast.warn('Unsupported file found(Only Image files is allowed)!');
             setError('Unsupported file found(Only Image files is allowed)!')
         }
-      };
+    };
       
-
     const handleSubmit = async (event) => {
         event.preventDefault();
         const errors =await validateFormData();
@@ -93,7 +100,7 @@ const Post = () => {
                 });
                 console.log(form);
                 await providerPost('/post',form,img).then((res)=>{
-                    res && res.newPost?setPostsLisit(prevPostsList => [...prevPostsList, res.newPost]):''
+                    res && res.newPost?setPostsList(prevPostsList => [...prevPostsList, res.newPost]):''
                     addPostClose()
                     setLoading(false);
                     setIsOpen(false);
@@ -105,17 +112,15 @@ const Post = () => {
         }
     };
 
-    const getServiceList = async () => {
+    const getPostList = async () => {
         try {
-            await providerGet('/post').then((res)=>{
-                setPostsLisit(res.postsList)
-            }).catch((error)=>{
-                console.log(error);
-            })
+            const response = providerId?await adminGet(`/post?id=${providerId}`):await providerGet(`/post?id=${providerData._id}`)
+            response.postsList ? setPostsList(response.postsList):''
         } catch (error) {
             toast.error(error?.response?.data?.errMsg)
         }
     };
+
     const addPostClose = ()=>{
         setIsOpen(false)
         setFormData({
@@ -126,10 +131,36 @@ const Post = () => {
         setCurrentImageIndex(0)
     }
 
+    const deletePost =async (postId) =>{
+        setConfirmAction(false)
+        if(postId){
+            await providerDelete(`/post?postId=${postId}`).then((res)=>{
+            if(res.delete){
+                setPostsList((prev) =>
+                prev.filter((post) => post._id !== postId))
+            }
+            }).catch((err) => console.log(err))
+        }
+    }
+
+    const bannPost =async () =>{
+        setConfirmAction(false)
+        console.log(bannedPost);
+            await adminPatch(`/post?postId=${bannedPost._id}`,{bann:bannedPost.isBanned}).then((res)=>{
+            if(res.bann){
+                setPostsList((prev) =>
+                prev.map((post) =>{ 
+                    if(post._id == bannedPost._id) post.isBanned = res.isBanned
+                    return post
+                }))
+            }
+            }).catch((err) => console.log(err))
+        
+    }
 
 
     useEffect(() => {
-        getServiceList()
+        getPostList()
     }, []);
 
     return (
@@ -137,14 +168,24 @@ const Post = () => {
             <section className="container px-4 mx-auto ">
                 <div className="sm:flex sm:items-center sm:justify-between  ">
                     <div className="flex w-full ">
-                        <div className="flex items-center gap-x-3">
-                            <div className="relative flex justify-center">
-                                <button onClick={() => setIsOpen(true)}
-                                    className="px-4 py-2 mx-auto tracking-wide text-white transition-colors duration-300  bg-slate-500 rounded-md hover:bg-slate-700 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80"
-                                >Add <span className="font-semibold text-xl">+</span></button>
-
-                            </div>       
-                        </div>
+                        {!providerId?<div className="flex items-center gap-x-3">
+                                <div className="relative flex justify-center">
+                                    <button onClick={() => setIsOpen(true)}
+                                        className="px-4 py-2 mx-auto tracking-wide text-white transition-colors duration-300  bg-slate-500 rounded-md hover:bg-slate-700 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80"
+                                    >Add <span className="font-semibold text-xl">+</span></button>
+                                </div>       
+                            </div>:
+                            <div className="flex items-center gap-x-3">
+                                <div className="relative flex justify-center">
+                                    <button onClick={() => {
+                                        setProviderId('')
+                                        setPostOpen(false)
+                                    }}
+                                        className="px-4 py-2 mx-auto tracking-wide text-white transition-colors duration-300  bg-slate-500 rounded-md hover:bg-slate-700 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80"
+                                    >Back</button>
+                                </div>       
+                            </div>
+                            }
                         <div className="mt-6 w-64 ml-4">
                             <div className="relative mb-4 flex w-full flex-wrap items-stretch">
                                 <input
@@ -221,11 +262,45 @@ const Post = () => {
                                                         setIOpenPost(true)
                                                         }}><RiEyeLine/></button>
                                                     </td>
-                                                    <td className="px-4 py-4 text-center text-sm font-thin whitespace-nowrap">
-                                                        {!post?.isBanned ?<button className="mr-2 mx-auto tracking-wide text-lg text-blue-700 capitaliz"><RiEditLine/></button>:''}
-                                                        <button className=" mx-auto tracking-wide text-lg text-red-700 capitaliz"><RiDeleteBin6Line/></button>
-                                                    </td>
+                                                    {!providerId?<td className="px-4 py-4 text-center text-sm font-thin whitespace-nowrap">
+                                                    {confirmAction && (
+                                                                toast.info(
+                                                                    <div>
+                                                                        <p>Are you sure you want to proceed?</p>
+                                                                        <button className="px-1 py-1 bg-indigo-500 text-white rounded-md" onClick={() => {deletePost(post._id)}}>Confirm</button>
+                                                                        <button className="px-1 py-1 bg-red-500 ml-1 text-white rounded-md" onClick={() => setConfirmAction(false)}>Cancel</button>
+                                                                    </div>,
+                                                                    {
+                                                                        toastId: '',
+                                                                        autoClose: false,
+                                                                        closeOnClick: true,
+                                                                        draggable: false,
+                                                                    }
+                                                                )
+                                                            )}
+                                                        {!post?.isBanned ?<button className="mr-2 mx-auto tracking-wide text-lg text-blue-700 capitaliz" onClick={()=>{setPostEdit(true),setEditPost(post)}}><RiEditLine/></button>:''}
+                                                        <button className=" mx-auto tracking-wide text-lg text-red-700 capitaliz "onClick={()=>setConfirmAction(true)}><RiDeleteBin6Line/></button>
+                                                    </td>:<td className="px-4 py-4 text-center text-sm font-thin whitespace-nowrap">
+                                                        <button className=" mx-auto tracking-wide text-lg text-red-700 capitaliz "onClick={()=>{setBannedPost(post);setConfirmAction(true)}}><BiBlock/></button>
+                                                        {confirmAction && (
+                                                                toast.info(
+                                                                    <div >
+                                                                        <p>Are you sure you want to proceed?</p>
+                                                                        <button className="px-1 py-1 bg-indigo-500 text-white rounded-md"  onClick={() => bannPost()}>Confirm</button>
+                                                                        <button className="px-1 py-1 bg-red-500 ml-1 text-white rounded-md" onClick={() => {setBannedPost('');setConfirmAction(false)}}>Cancel</button>
+                                                                    </div>,
+                                                                    {
+                                                                        toastId: '',
+                                                                        autoClose: false,
+                                                                        closeOnClick: true,
+                                                                        draggable: false,
+                                                                    }
+                                                                )
+                                                            )}
+                                                        </td>}
+                                                    
                                                 </tr>
+                                                                
                                             ))
                                         ) : (
                                             <tr>
@@ -241,6 +316,7 @@ const Post = () => {
                         </div>
                     </div>
                 </div>
+                {postEdit && <PostUpdate editPost={editPost} setPostsList={setPostsList} setPostEdit={setPostEdit}/>}
                 {isOpen && (
                     <div
                         className="fixed inset-0 z-10 overflow-y-auto bg-slate-200"
@@ -254,40 +330,6 @@ const Post = () => {
                             </span>
                     
                             <div className="relative inline-block p-4 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl sm:max-w-sm rounded-xl -bg-gray-900 sm:my-8 sm:w-full sm:p-6">
-                                {/* <div className="flex items-center justify-center mx-auto">
-                                    {formData.postImages[0] instanceof File ? (
-                                        <img className=" rounded-lg w-58 h-48" src={URL.createObjectURL(formData.postImages[0])} alt="Selected" />
-                                    ) : null}
-                                </div> */}
-                                    {/* {formData.postImages.length > 0 ? 
-                                        <div className="relative w-full max-w-screen-lg mx-auto">
-                                            <div className="relative h-56 overflow-hidden">
-                                            {Array.from(formData.postImages).map((image, index) => (
-                                                <img
-                                                key={index}
-                                                src={URL.createObjectURL(image)}
-                                                alt="Slider Image"
-                                                className={`w-full h-auto absolute top-0 left-0 transition-opacity duration-500 ease-in-out ${
-                                                    index === currentImageIndex ? 'opacity-100' : 'opacity-0'
-                                                }`}
-                                                />
-                                            ))}
-                                            { formData.postImages.length > 1 &&
-                                                <>
-                                                    <button
-                                                    className="absolute left-1 top-1/2 transform -translate-y-1/2 p-2 bg-gray-200 opacity-70 rounded-full cursor-pointer"
-                                                    onClick={prevImage}
-                                                    ><GrPrevious /></button>
-                                                    <button
-                                                    className="absolute right-1 top-1/2 transform -translate-y-1/2 p-2 bg-gray-200 opacity-70 rounded-full cursor-pointer"
-                                                    onClick={nextImage}
-                                                    ><GrNext/></button>
-                                                </>
-                                            }
-
-                                            </div>
-                                        </div>
-                                    :''} */}
                                 <ImageSlider images={formData.postImages} height={'h-56'} manageIndex={setCurrentImageIndex} currentIndex={currentImageIndex} />
                                 <form onSubmit={handleSubmit} encType="multipart/form-data">
                                     <div>
@@ -296,7 +338,7 @@ const Post = () => {
                                     </div>                                    
                                     <div>
                                         <label htmlFor="tagline" className="block text-sm text-gray-500 -text-gray-300 mt-4">Hash Tag</label>
-                                        <textarea  className="border-2 border-slate-300 w-full" id=""  name="tagline" onChange={handleChange} placeholder="#new #party"/>
+                                        <textarea  className="border-2 border-slate-300 w-full text-blue-600" id=""  name="tagline" onChange={handleChange} placeholder="#new #party"/>
                                     </div>
                                     <div>
                                         <label htmlFor="image" className="block text-sm text-gray-500 -text-gray-300 mt-4">Image</label>
@@ -325,7 +367,8 @@ const Post = () => {
                         </div>
                     </div>
                 )}
-                {openPost?<SinglePost post={selectedPost} setSelectedPost={setSelectedPost} setIOpenPost={setIOpenPost} providerData={providerData}/>:''}
+
+                {openPost?<SinglePost post={selectedPost} setPostsData={setPostsList} setSelectedPost={setSelectedPost} setIOpenPost={setIOpenPost} user={providerId?{}:providerData} role={providerId?'admin':'provider'}/>:''}
 
 
             </section>
@@ -334,5 +377,13 @@ const Post = () => {
     )
 
 };
+
+Post.propTypes = {
+    providerId: PropTypes.string, 
+    setPostOpen: PropTypes.func,
+    setProviderId: PropTypes.func,
+
+};
+
 
 export default Post;

@@ -22,7 +22,7 @@ const  Providers = ()=> {
         const fetchProviders = async () => {
             try {
                 await usersGet('/providersList').then((res)=>{
-                    setProviders(res.providerData);
+                    setProviders(res.providersData);
                 }).catch((error)=>{
                     console.log(error);
                 })
@@ -92,9 +92,8 @@ const  Providers = ()=> {
                             </div>
                         :''}
                         <hr />
-                        <div className={`${providers.length != 0 ?'grid grid-cols-1 2xl:grid-cols-3 lg:grid-cols-2 px-6 py-10 gap-8':'w-full' }`}>
-                            {
-                                providers.length != 0 ? (
+                        <div className={`${providers?.length && providers?.length != 0 ?'grid grid-cols-1 2xl:grid-cols-3 lg:grid-cols-2 px-6 py-10 gap-8':'w-full' }`}>
+                            {providers?.length && providers?.length != 0 ? (
                                     providers.filter((provider) => provider.name.includes(searchText)).map((provider) => (
                                     <div key={provider._id} className=" max-w-2xl mx-4 sm:max-w-md sm:mx-auto cursor-pointer transition-colors duration-300  bg-white hover:bg-slate-800 hover:text-gray-100 shadow-xl rounded-lg text-gray-900 p-8"
                                         onClick={()=>{
@@ -113,7 +112,7 @@ const  Providers = ()=> {
                                             <p className="text-center text-gray-500 px-12 ">{provider.description?provider.description:'Servies provider'}</p>
                                         </div>
                                         <div className="p-4 border-t mx-8 mt-2">
-                                            <button className="w-1/2 block mx-auto rounded-full bg-gray-500 hover:shadow-lg font-semibold text-white px-6 py-2" >Details</button>
+                                            <button className=" block mx-auto rounded-full bg-gray-500 hover:shadow-lg font-semibold text-white px-6 py-2" >Details</button>
                                         </div>
                                     </div>
                                 ))

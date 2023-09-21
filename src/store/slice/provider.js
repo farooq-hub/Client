@@ -15,7 +15,9 @@ export const providerAuthSlice = createSlice({
             state.providerData = action.payload.providerData;
             state.token = action.payload.token;
         },
-
+        updateProviderData:(state, action) => {
+            state.providerData = action.payload.providerData;
+        },
         providerLogout: (state) => {
             state.role = null;
             state.providerData = null;
@@ -24,5 +26,5 @@ export const providerAuthSlice = createSlice({
     }
 });
 
-export const { providerLogin, providerLogout } = providerAuthSlice.actions;
+export const { providerLogin,updateProviderData, providerLogout } = providerAuthSlice.actions;
 export default providerAuthSlice.reducer;
