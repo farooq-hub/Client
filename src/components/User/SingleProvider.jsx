@@ -12,6 +12,7 @@ import useWidthSize from '../../utils/useWidthSize';
 import Button from '../customComponent/Button';
 import { useSelector } from 'react-redux';
 import SinglePost from '../SinglePost';
+import OptionByService from '../OptionByService';
 
 const SingleProvider = ({providerData,setViewProvider,setSelectedProvider}) => {
 
@@ -20,6 +21,8 @@ const SingleProvider = ({providerData,setViewProvider,setSelectedProvider}) => {
     const [postList, setPostList] = useState([])
     const widthSize = useWidthSize();
     const [singlePost, setSinglePost] = useState(false);
+    const [optionsByService, setOptionsByService] = useState(false);
+    const [selectedService, setSelectedService] = useState({});
     const [selectedPost, setSelectedPost] = useState({});
     const userData = useSelector((state) => state.user.userData);
 
@@ -109,7 +112,7 @@ const SingleProvider = ({providerData,setViewProvider,setSelectedProvider}) => {
                         />
                     ))}
                 </div>):<div className="col-span-3 w-full text-center"> <p className="text-lg text-indigo-900">No posts</p></div>):activeTab == 'service' ?(providerData.services && providerData.services.map((val) => (
-                    <Service key={val._id} service={val}/> ))):""}
+                    <Service key={val._id} service={val} onClick={()=>{setOptionsByService(true);setSelectedService(val)}}/> ))):""}
             </div>):
             <div className="flex h-full items-center justify-center bg-white">
                 <Spinner className={'h-28 w-28 '}/>
@@ -117,7 +120,7 @@ const SingleProvider = ({providerData,setViewProvider,setSelectedProvider}) => {
         }
 
         {singlePost?<SinglePost post={selectedPost} setPostsData={setPostList} setSelectedPost={setSelectedPost} setIOpenPost={setSinglePost} user={userData} role={'user'}/>:''}
-
+        {optionsByService?<OptionByService handleClose={()=>{setOptionsByService(false);setSelectedService({})}} service={selectedService} providerId={providerData._id}/>:''}
 
         </div>
     )

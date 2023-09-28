@@ -4,6 +4,7 @@ import { FaUserCog,FaHome } from 'react-icons/fa'
 import useWidthSize from "../../utils/useWidthSize";
 import { GrServices,GrPowerShutdown,GrUser } from 'react-icons/gr'
 import NavItem from "../NavItem";
+import { HiClipboardList } from "react-icons/hi";
 
 const Sidebar = () => {
 
@@ -63,7 +64,7 @@ const Sidebar = () => {
                     <NavItem icon={<GrUser/>} name={"USERS"} path={'/admin/users'} />
                     <NavItem icon={<FaUserCog/>} name={"PROVIDER"} path={'/admin/providers'} />
                     <NavItem icon={<GrServices/>} name={"SERVICES"} path={'/admin/services'} />
-                    {/* <NavItem icon={} name={'POSTS'} path={'/admin/posts'} /> */}
+                    <NavItem icon={<HiClipboardList/>} name={'ORDERS'} path={'/admin/orders'} />
                     {/* <NavItem icon={} name={"ORDERS"} path={'/admin/orders'} /> */}
                     {/* <NavItem icon={} name={"ADS"} path={'/admin/ads'} /> */}
                     <NavItem icon={<GrPowerShutdown/>} name={'LOGOUT'} path={'/admin/login'}/>                    

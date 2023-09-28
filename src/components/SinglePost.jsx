@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import  avatar  from "../assets/very_big_Luffy.jpg"
-import PropTypes from 'prop-types';
+import PropTypes from 'prop-types'; 
 import { IoMdClose } from "react-icons/io";
 import { AiFillHeart, AiOutlineHeart, AiOutlineSend,AiOutlineWarning } from "react-icons/ai";
 import { FiBookmark, FiSend } from "react-icons/fi";
@@ -14,6 +14,8 @@ import { adminGet } from "../Services/adminApi";
 import { usersGet, usersPatch, usersPost } from "../Services/userApi";
 import Button from "./customComponent/Button";
 import Modal from "./customComponent/Modal";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 
 const SinglePost = ({post,setPostsData,setSelectedPost,setIOpenPost,user,role})=> {
@@ -24,6 +26,7 @@ const SinglePost = ({post,setPostsData,setSelectedPost,setIOpenPost,user,role})=
     const [loading, setLoading] = useState(true);
     const [waiting, setWaiting] = useState(false);
     const [modal,setModal] = useState('')
+    const navigate = useNavigate();
 
     const getComments =async () => {
         try {
@@ -62,7 +65,7 @@ const SinglePost = ({post,setPostsData,setSelectedPost,setIOpenPost,user,role})=
     }
 
     const postCommentUser =async () => {
-
+        if(user){
             setWaiting(true)
             await usersPost(`/comment?postId=${postData._id}`,{comment})
             .then((res)=>{
@@ -83,11 +86,16 @@ const SinglePost = ({post,setPostsData,setSelectedPost,setIOpenPost,user,role})=
     
             }).catch((err)=>console.log(err))
             console.log(comment);
+        }else{
+            toast.warn('Login first')
+            navigate('/login')
         
+        }
 
     }
 
     const postReportUser =async () => {
+        if(user){
         if(!postData.reports.includes(user._id)){
             setPostData((prev) => ({
                 ...prev,
@@ -104,6 +112,11 @@ const SinglePost = ({post,setPostsData,setSelectedPost,setIOpenPost,user,role})=
                 console.log(err);
             })
         }
+    }else{
+        toast.warn('Login first')
+        navigate('/login')
+    
+    }
     }
     
     const likePostProvider =async () => {
@@ -140,6 +153,7 @@ const SinglePost = ({post,setPostsData,setSelectedPost,setIOpenPost,user,role})=
     }
 
     const likePostUser =async () => {
+        if(user){
         if(!postData.likes.includes(user._id)){
             setPostData((prev) => ({
                 ...prev,
@@ -167,6 +181,11 @@ const SinglePost = ({post,setPostsData,setSelectedPost,setIOpenPost,user,role})=
             }).catch((err)=>{
                 console.log(err);
             })
+        }
+    }else{
+            toast.warn('Login first')
+            navigate('/login')
+        
         }
         
     }
@@ -207,7 +226,7 @@ const SinglePost = ({post,setPostsData,setSelectedPost,setIOpenPost,user,role})=
                             <span className="text-sm font-semibold antialiased block leading-tight">{postData.providerId.name}</span>
                             <span className="text-gray-600 text-xs block">{postData.providerId.location ? postData.providerId.location : 'Kerala'}</span>
                         </div>
-                        {role =='user'? 
+                        {role =='user'&&user? 
                             <button className="ms-auto " onClick={()=>setModal('report')}><BsThreeDots/></button>
                         :''}
                     </div>
@@ -261,14 +280,14 @@ const SinglePost = ({post,setPostsData,setSelectedPost,setIOpenPost,user,role})=
                                     <div className="text-center my-6">
                                         <p className="text-gray-500">No comments ...</p>
                                     </div>
-                                   :commentsList.map((comment)=><Comment key={comment._id} comment={comment} userId={user._id} role={role} isBanned={postData.isBanned} setCommentsList={setCommentsList}/>)
+                                   :commentsList.map((comment)=><Comment key={comment._id} comment={comment} userId={user?user._id:''} role={role} isBanned={postData.isBanned} setCommentsList={setCommentsList}/>)
                                 }
                             </div>
                         </div>
                         <div className=" w-full my-auto bg-white">
                             <div className="flex mx-2 my-3">
                             <div className="group flex cursor-pointer relative">
-                                {role!='admin'&&
+                                {role!='admin'&&user&&
                                     postData.likes.includes(user._id) ? 
                                         <><AiFillHeart className="text-red-600 text-3xl mx-2 " onClick={role != 'admin'&& role == 'provider' ? likePostProvider:role =='user' ? likePostUser:''} />
                                         <span className="group-hover:opacity-100 transition-opacity bg-gray-100 px-1  text-sm text-gray-900  absolute left-1/2 
@@ -307,9 +326,9 @@ const SinglePost = ({post,setPostsData,setSelectedPost,setIOpenPost,user,role})=
                                     comment.trim() && role!='admin' ?
                                         <div className="ml-auto flex items-center">
                                             {
-                                                waiting ? <Spinner className={'h-6 w-6'} /> :
+                                                waiting ? <Spinner className={'h-6 w-6'} /> : user?
                                                 <Button className="focus:outline-none border-none bg-transparent text-blue-600" handelEvent={role === 'user' ? postCommentUser:role==='provider' ?postCommentProvider:''}
-                                                content={<AiOutlineSend className="text-lg"/>}/>
+                                                content={<AiOutlineSend className="text-lg"/>}/>:''
                                             }
                                         </div>
                                     :''

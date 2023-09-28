@@ -137,10 +137,10 @@ const Profile = () => {
                     <img className="w-40 h-40 p-2 mb-3 rounded-full object-cover shadow-lg" src={imageSrc} alt="loading..."/>
                 </div>
                 <p className="mb-3 text-2xl font-medium text-gray-900 uppercase underline">MR: {userData.name}....</p>
-                <div className="shadow-lg p-4 border-gray-500 rounded-md">
-                    <p className="mb-1 text-lg font-serif text-gray-900 ">Email  : <span className="text-base text-gray-700">{userData.email}</span></p>
-                    <p className="mb-1 text-lg font-mono text-gray-900  ">Phone   : <span className="text-base text-gray-700">+91 {userData.phone}</span></p>
-                    <p className="mb-1 text-lg font-serif text-gray-900 ">Wallet : <span className="text-base text-gray-700">₹ {userData.wallet}.00</span></p>
+                <div className=" p-4 ">
+                    <p className="mb-1 text-lg font-serif text-gray-900">Email  : <span className="text-base text-gray-700">{userData.email}</span></p>
+                    <p className="mb-1 text-lg font-mono text-gray-900">Phone   : <span className="text-base text-gray-700">+91 {userData.phone}</span></p>
+                    <p className="mb-1 text-lg font-serif text-gray-900">Wallet : <span className="text-base text-gray-700">₹ {userData.wallet}.00</span></p>
                     {userData.place?<p className="mb-1 text-lg font-serif text-gray-900 ">Place : <span className="text-base text-gray-700">{userData.place}</span></p>:''}
 
                     {/* <p className="mb-1 text-lg  text-gray-900 uppercase">₹: {userData.wallet}</p> */}

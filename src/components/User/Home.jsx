@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import LoadingPost from '../customComponent/LoadingPost'
 import { usersGet } from '../../Services/userApi'
 import OnePost from '../OnePost'

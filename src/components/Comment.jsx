@@ -5,6 +5,9 @@ import PropTypes from 'prop-types';
 import  avatar  from "../assets/very_big_Luffy.jpg"
 import { providerDelete, providerPatch } from '../Services/providerApi';
 import { usersDelete, usersPatch } from '../Services/userApi';
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+
 
 
 
@@ -12,8 +15,10 @@ const Comment = ({comment,userId,role,isBanned}) => {
 
     const [commentData,setCommentData] = useState(comment)
     const [removeComment,setRemoveComment] = useState(false)
+    const navigate = useNavigate();
 
     const likeComment =async ()=>{
+        if(userId){
         if(!isBanned&&role=='user' || role ==='provider'){
             let respons;
             if(role == 'provider') respons = await providerPatch(`/comment?commentId=${commentData._id}`,{like:true})
@@ -25,8 +30,12 @@ const Comment = ({comment,userId,role,isBanned}) => {
                     likes: [...prev.likes,userId], 
                 }));
             }
-        }
-    }
+        }    
+    }else{
+            toast.warn('Login first')
+            navigate('/login')
+        
+    }}
 
     const unlikeComment = async () => {
         if(!isBanned&&role=='user' || role ==='provider'){
@@ -65,7 +74,7 @@ const Comment = ({comment,userId,role,isBanned}) => {
                         <div className="flex items-center">
                             <p className="text-sm pr-1 break-all whitespace-normal" ><span className="mr-2 text-slate-900 font-semibold">{commentData.user.length !=0 ?commentData.user[0].name:commentData.provider[0].name}.</span>{commentData.content}</p>
                             <div className="text-xs ms-auto my-auto cursor-pointer mx-2 transform transition-colors duration-200 text-slate-900">
-                                {
+                                {   userId&&
                                     commentData.likes.includes(userId) ?
                                     <AiFillHeart className="text-red-600"  onClick={unlikeComment}/>
                                     :<AiOutlineHeart className="text-gray-900" onClick={likeComment}/>
@@ -75,7 +84,7 @@ const Comment = ({comment,userId,role,isBanned}) => {
                         <div className="flex items-center mt-1 hover:text-red-700 text-white">
                             <p className="text-xs text-gray-500">{new Date(commentData.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</p>
                             <p className="text-xs text-gray-500 ml-4">{commentData.likes.length} like</p>
-                            {
+                            {   userId&&
                                 commentData.userId == userId ?
                                     <div className="text-xs cursor-pointer ml-4 transform transition-colors duration-200 ">
                                         <RiDeleteBin6Line onClick={deleteComment}/>

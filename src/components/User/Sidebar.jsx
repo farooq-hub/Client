@@ -70,7 +70,7 @@ const Sidebar = () => {
                     {/* <NavItem icon={faCircleInfo} name={'MORE'} path={'/more'} /> */}
                     {/* <NavItem icon={faHandshakeAngle} name={'HELP'} path={'/help'} /> */}
                     {token ?
-                        <NavItem icon={<AiOutlineUser/>} active={location.pathname == '/profile'?true:false} name={'PROFILE'} path={'/profile'} />
+                        <NavItem icon={<AiOutlineUser/>} active={location.pathname == '/profile'||location.pathname == '/orders'||location.pathname == '/order'?true:false} name={'PROFILE'} path={'/profile'} />
                         : 
                         <></>
                     }

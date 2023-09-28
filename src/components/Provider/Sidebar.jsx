@@ -6,6 +6,8 @@ import useWidthSize from "../../utils/useWidthSize";
 import NavItem from '../NavItem'
 import { useLocation } from "react-router-dom";
 import { TbTableOptions } from "react-icons/tb";
+import { HiMiniClipboardDocumentList } from "react-icons/hi2";
+
 const Sidebar = () => {
    
     const [isOpen, setIsOpen] = useState(false);
@@ -63,7 +65,7 @@ const Sidebar = () => {
                     {/* <NavItem icon={faServer} name={"SERVICES"} path={'/provider/services'} /> */}
                     <NavItem icon={<FaIdCard/>} active={location.pathname == '/provider/post'?true:false} name={'POSTS'} path={'/provider/post'} />
                     <NavItem icon={<TbTableOptions/>} name={"OPTION"} active={location.pathname == '/provider/option'?true:false} path={'/provider/option'} />
-                    {/* <NavItem icon={faMoneyCheck} name={"UPGRADE"} path={'/provider/upgrade'} /> */}
+                    <NavItem icon={<HiMiniClipboardDocumentList/>}  active={location.pathname == '/provider/orders'?true:false} name={"ORDER"} path={'/provider/orders'} />
                     <NavItem icon={<AiOutlineUser/>} name={"PROFILE"} active={location.pathname == '/provider/profile'?true:false} path={'/provider/profile'} />
                     <NavItem icon={<GrPowerShutdown/>} name={"LOGOUT"} path={'/provider/login'} />
 

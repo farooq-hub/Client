@@ -8,6 +8,8 @@ import { usersPatch, usersPost } from "../Services/userApi";
 import { providerPatch, providerPost } from "../Services/providerApi";
 import Spinner from "./Spinner";
 import Button from "./customComponent/Button";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 
     
@@ -17,10 +19,13 @@ const OnePost = ({post,handleEvent,user,role}) => {
     const [comment, setComment] = useState('');
     const [postedComment, setPostedComment] = useState('');
     const [loading, setLoading] = useState('');
+    const navigate = useNavigate();
+
     
     
     const postCommentUser =async () => {
 
+    if(user._id){
         setLoading('comment')
         await usersPost(`/comment?postId=${postData._id}`,{comment})
         .then((res)=>{
@@ -28,8 +33,11 @@ const OnePost = ({post,handleEvent,user,role}) => {
             console.log(res);
             res.newComment && !postedComment ? setPostedComment(res.newComment.content):''
             setLoading('')
-
         }).catch((err)=>console.log(err))
+    }else{
+        toast.warn('Login first')
+        navigate('/login')
+    }
         console.log(comment);
     }
 
@@ -50,6 +58,7 @@ const OnePost = ({post,handleEvent,user,role}) => {
 
     const likePostUser =async () => {
         console.log(user,'||||||||||||||||',role);
+        if(user){
         if(!postData.likes.includes(user._id)){
             setPostData((prev) => ({
                 ...prev,
@@ -78,6 +87,10 @@ const OnePost = ({post,handleEvent,user,role}) => {
                 console.log(err);
             })
         }
+    }else{
+        toast.warn('Login first')
+        navigate('/login')
+    }
     
     }
     const likePostProvider =async () => {
@@ -130,7 +143,7 @@ const OnePost = ({post,handleEvent,user,role}) => {
                         <div className="flex items-center justify-between mx-4 mt-3 mb-2">
                         <div className="flex items-center gap-5 cursor-pointer">
                             {
-                                postData.likes.includes(user._id) ? 
+                                user&&postData.likes.includes(user._id) ? 
                                     <AiFillHeart className="text-red-600  text-3xl" onClick={role === 'user' ? likePostUser:role==='provider' ?likePostProvider:''}/>
                                     :<AiOutlineHeart className="text-black text-3xl" onClick={role === 'user' ? likePostUser:role=='provider' ?likePostProvider:''}/>
                             }
@@ -150,7 +163,7 @@ const OnePost = ({post,handleEvent,user,role}) => {
                         :""}
                         <div className="mb-1 mx-5 flex items-center">
                                 <div className="w-full">
-                                    <textarea className="w-full resize-none outline-none appearance-none max-h-[76px] " name="comment"  placeholder="Add a comment..." value={comment} onChange={(e)=>setComment(e.target.value.trim())} autoComplete="off" autoCorrect="off" />
+                                    <textarea className="w-full resize-none outline-none appearance-none max-h-[76px]" name="comment"  placeholder="Add a comment..." value={comment} onChange={(e)=>setComment(e.target.value.trim())} autoComplete="off" autoCorrect="off" />
                                 </div>
                                 {
                                     comment.trim()  ?

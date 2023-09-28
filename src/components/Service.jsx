@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 
 
-const Service = ({service}) => {
+const Service = ({service,onClick}) => {
   return (
     <>
-            <div
+            <div onClick={onClick?onClick:''}
             className='relative overflow-hidden h-[20rem] lg:h-[26rem]  pt-[100%]'
         >
                 <div
@@ -23,7 +23,8 @@ const Service = ({service}) => {
 }
 
 Service.propTypes = {
-    service: PropTypes.any, 
+    service: PropTypes.any,
+    onClick: PropTypes.any 
 };
 
 export default Service

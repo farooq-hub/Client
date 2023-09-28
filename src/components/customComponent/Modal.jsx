@@ -1,4 +1,3 @@
-import React from 'react'
 import PropTypes from 'prop-types';
 import { IoMdClose } from 'react-icons/io';
 
@@ -13,9 +12,9 @@ const Modal = ({closeModal,modalHeader,modalBody,modalFooter}) => {
             </div>
         </div>
 
-        <div className="modal-container  bg-white mx-auto  rounded-lg shadow-lg z-50 max-w-screen max-h-screen">
-                <div className="flex min-h-full mx-6 items-end justify-center p-4 text-center sm:items-center sm:p-0">
-                <div className="relative transform overflow-hidden rounded-lg bg-white text-left transition-all sm:w-full sm:max-w-lg">
+        <div className="modal-container  bg-white mx-4 my-4 rounded-lg shadow-lg z-50 max-w-screen  max-h-screen">
+                <div className="flex min-h-full mx-auto items-end justify-center  min-w-[24rem]  text-center sm:items-center sm:p-0">
+                <div className="relative transform overflow-hidden rounded-lg bg-white text-left transition-all sm:w-full sm:max-w-screen">
                     <>{modalHeader}</> <>{modalBody}</> <>{modalFooter}</>
                     {/* <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                     <div className="sm:flex sm:items-start">
