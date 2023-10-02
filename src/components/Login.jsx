@@ -28,22 +28,22 @@ function Login({role}) {
 
      
     const errorHandle = () => {
-    const {  phone, password } = formData;
-    const pattern = /^[6789]\d{9}$/;
-    if(phone.trim().length == 0 || password.trim().length == 0){
-        setError('Fill all the fields')
-        return false
-    }
-    else if (!pattern.test(phone)){
-        setError('Enter a valid phone number')
-        return false
-    }else if(password.trim().length < 4){
-        setError('Password must have at least 4 characters long')
-        return false
-    }else{
-        setError('')
-        return true
-    }
+        const {  phone, password } = formData;
+        const pattern = /^[6789]\d{9}$/;
+        if(phone.trim().length == 0 || password.trim().length == 0){
+            setError('Fill all the fields')
+            return false
+        }
+        else if (!pattern.test(phone)){
+            setError('Enter a valid phone number')
+            return false
+        }else if(password.trim().length < 4){
+            setError('Password must have at least 4 characters long')
+            return false
+        }else{
+            setError('')
+            return true
+        }
     }
 
     const handleChange = (e) => {
@@ -62,13 +62,12 @@ function Login({role}) {
             try {
                 const response = await role == 'admin' ? adminPost('/login',formData) : role == 'user' ? usersPost('/login',formData):providerPost('/login',formData)
                 response.then((response)=>{
-                        const name = response?.name;
                         const token = response?.token;
                         const role = response?.role;
                         const providerData = response?.providerData;
                         const userData = response?.userData;
+                        const adminData = response?.adminData;
 
-                        console.log(role, name, token);
                         if (role === 'user') {
                             dispatch(userLogin({ userData, token, role}));
                             toast.success(response.msg)
@@ -76,7 +75,7 @@ function Login({role}) {
 
                         } else if (role === 'admin') {
                             console.log(role);
-                            dispatch(adminLogin({ name, token, role}));
+                            dispatch(adminLogin({adminData, token, role}));
                             toast.success(response.msg)
                             navigate('/admin')
                         } else if (role === 'provider') {

@@ -9,6 +9,7 @@ import { BsStripe } from 'react-icons/bs';
 import Button from './customComponent/Button';
 import Modal from './customComponent/Modal';
 import { AiOutlineWarning } from 'react-icons/ai';
+import { RiFeedbackLine } from 'react-icons/ri';
 
 const SingleOrder = ({role}) => {
 
@@ -24,19 +25,20 @@ const SingleOrder = ({role}) => {
         const queryParams = new URLSearchParams(location.search);
         const id = queryParams.get('id');
         console.log(id);
-        if(id){
+        if(id&&id!='null'){
             setLoading('getingOrderData')
             let result
             if(role =='user')result = await usersGet(`/order/${id}`)
             else if(role =='provider')result = await providerGet(`/order/${id}`)
             else if(role =='admin')result = await adminGet(`/order/${id}`);
-                console.log(result,result.orderData);
-                if(result.orderData)setOrderData(result.orderData)
-                else navigate(-1)
+                console.log(result);
+                if(result?.orderData?.status == 'Completed') setModal('feedback')
+                if(result?.orderData)setOrderData(result.orderData)
+                else role =='user'?navigate('/orders'):role =='provider'?navigate('/provider/orders'):role =='admin'?navigate('/admin/orders'):""
                 isCanclation(result?.orderData?.orderCreatedAt,result?.orderData?.status)
                 setLoading('')
         }else{
-            navigate(-1)
+            role =='user'?navigate('/orders'):role =='provider'?navigate('/provider/orders'):role =='admin'?navigate('/admin/orders'):""
         }
     }
 
@@ -163,7 +165,7 @@ const SingleOrder = ({role}) => {
                         <h1 className="text-lg font-serif text-center text-gray-800 capitalize lg:text-xl">OPTIONS DETAILS</h1>
                     </div>
                     <div className="max-h-56 xl:max-h-72 px-4 py-6 border-b overflow-y-scroll">
-                        {loading !='getingOrderData' ? 
+                        {loading !='getingOrderData' && orderData?.options? 
                             <OptionDetails options={orderData.options} role={'order'}/>
                         :<div className='animate-pulse w-full h-20 bg-gray-200'></div>}
                     </div>
@@ -231,7 +233,30 @@ const SingleOrder = ({role}) => {
                     content={'Cancel order'} handelEvent={()=>setModal('cancelOrder')}/>:""}
                 </div>
             </div>
-        :""}
+        :loading !== 'getingOrderData'&&
+            <div className="bg-white mb-4">
+                <div className='flex justify-center mx-2'>
+                    <p className='capitalize text-lg font-serif mt-2 mb-1'>Order Successfully <span className='text-green-600'> {orderData.status}  
+                    </span></p>
+                </div>
+                {
+                    role == 'user'?<>
+                    <div className='flex justify-center mx-4 text-gray-600 font-normal tex-sm'>
+                        <p className='capitalize italic text-center'>We hope you had a wonderful event and that it was a resounding success. 
+                            Your satisfaction is our priority, and we&#39;re  delighted to have been a part of <br/> your special day.
+                            If you have any future events in mind or require our services again, don&#39;t hesitate to reach out.<br/> We look forward to assisting you in the future.
+                            Wishing you all the best in your future endeavors, and <br/> thank you for allowing us to be a part of your event!
+                        </p>
+                    </div> 
+                    <div className='flex justify-center mx-4 text-gray-600 font-normal tex-sm'>
+                        <Button className={'flex font-serif hover:underline items-center '}
+                        content={<>We&#39;d love to hear about your <span className='text-blue-600'>&nbsp;experience and any feedback&nbsp;</span> 
+                        you may have.<span className='text-blue-600 mx-2 text-lg'><RiFeedbackLine/></span></>}/>
+                    
+                    </div> 
+                    </>
+                :''}
+            </div>}
         { modal ==='cancelOrder'?
             <Modal closeModal={()=>setModal('')}modalHeader={
                     <div className="flex items-center justify-center border-b"><Button content={<AiOutlineWarning className="text-7xl text-red-600 m-4"/>}/>

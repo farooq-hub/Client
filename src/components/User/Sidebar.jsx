@@ -7,7 +7,9 @@ import { FiLogIn } from 'react-icons/fi'
 import {  GrPowerShutdown } from 'react-icons/gr'
 import { HiOutlineUserGroup } from 'react-icons/hi'
 import {AiOutlineUser} from 'react-icons/ai'
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import Button from "../customComponent/Button";
+import { IoWalletOutline } from "react-icons/io5";
 
 
 
@@ -16,7 +18,8 @@ const Sidebar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const location = useLocation()
     const widthSize = useSize();
-    const {token} = useSelector(state => state.user)
+    const navigate = useNavigate()
+    const {token,userData:{wallet}} = useSelector(state => state.user)
     const toggleSidebar = () => {
         setIsOpen(true);
     };
@@ -30,7 +33,7 @@ const Sidebar = () => {
 
         <div className="flex ">
             <div
-                className={`fixed inset-y-0 left-0 z-50 w-64 bg-white text-black  border-r  border-black-100 shadow transition-transform duration-300 ease-in-out transform ${isOpen ? 'translate-x-0' : '-translate-x-full'
+                className={`fixed inset-y-0 left-0 z-50 w-64 bg-white text-black  border-r h-screen border-black-100 shadow transition-transform duration-300 ease-in-out transform ${isOpen ? 'translate-x-0' : '-translate-x-full'
                     } md:translate-x-0`}
             >
                 <div className=" ">
@@ -57,7 +60,7 @@ const Sidebar = () => {
                         </button>
                     )}
                 </div>
-                <div >
+                <div className="flex-row">
 
                     <div className="mt-5 ml-5">
                         <h1 className="font-sans font-black text-slate-900 text-3xl ">ELITE</h1>
@@ -79,11 +82,21 @@ const Sidebar = () => {
                         : 
                         <NavItem icon={<FiLogIn/>} name={'LOGIN'} path={'/login'} />
                     }
+                    {token ?
+                        <div className="absolute z-50  bottom-3 left-3 flex ">
+                            <Button className="text-lg font-mono flex items-center hover:underline text-gray-900 rounded space-x-2 transition duration-100"
+                                handelEvent={() => navigate('/profile#transationHistory')} content={<>
+                                <IoWalletOutline className="text-2xl text-blue-600"/><span className="mx-4">:</span>{wallet?<span>₹ {wallet}.00</span>:
+                                <div className="h-5 w-5 border-2 rounded-full bg-white border-t-transparent animate-spin border-gray-900"></div>}</>}/>
+                        </div>       
+                        : 
+                        <></>
+                    }
                 </div>
             </div>
 
 
-            <div className="flex flex-col flex-grow">
+            <div className={`flex flex-col flex-grow`}>
 
                 <div className="border-r  border-black-100 shadow transition-transform duration-300 ease-in-out transform">
                     <div className="flex items-center justify-between px-4 py-3 bg-white">
@@ -91,7 +104,7 @@ const Sidebar = () => {
 
                             <button
                                 onClick={toggleSidebar}
-                                className="block text-gray-500 hover:text-black focus:text-white focus:outline-none md:hidden"
+                                className="block text-gray-500 hover:text-black  focus:outline-none md:hidden"
                             >
                                 <svg
                                     className="w-6 h-6"

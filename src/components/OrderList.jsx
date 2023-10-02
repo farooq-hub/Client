@@ -65,7 +65,8 @@ const OrderList = ({role,path}) => {
                                 <td className=' border-b   px-2 py-2.5 text-sm  capitalize md:break-all whitespace-normal text-center'>
                                 {role == 'provider' ? order?.name : role == 'user' ? order?.providerId?.name : order?.providerId?.name}</td>
                                 {role == 'admin' ?<td className=' border-b   px-4 py-3.5 text-sm  capitalize md:break-all whitespace-normal text-center'>{order?.name}</td>:''}
-                                <td className=' border-b   px-4 py-3.5 text-sm  capitalize md:break-all whitespace-normal text-center'>{order?.orderCreatedAt?.split('T')[0]}</td>
+                                <td className=' border-b   px-4 py-3.5 text-sm  capitalize md:break-all whitespace-normal text-center'>
+                                {(() => new Date(order.orderCreatedAt).toLocaleDateString("en-US", {year: "numeric",month: "short",day: "numeric"}))()}</td>
                                 <td className=' border-b   px-4 py-3.5 text-sm  capitalize md:break-all whitespace-normal text-center'>₹ {order.grandTotal}.00</td>
                                 <td className={`${order.status == 'Confirmed'?'text-blue-800':(order.status =='Completed'?'text-green-800':'text-red-600')}  border-b px-4 py-3.5 text-sm  capitalize md:break-all whitespace-normal text-center`}>{order.status}</td>
                                 <td className='   border-b px-4 py-3.5 '><AiOutlineEye className='text-center mx-auto text-lg'
@@ -75,7 +76,7 @@ const OrderList = ({role,path}) => {
                                     /></td>
                             </tr>)):
                             <tr className='hover:bg-gray-200 '>
-                                <td colSpan={5} className='text-red-600 px-4 py-3.5 text-[.98rem]  capitalize break-all whitespace-normal text-center'><p className='my-2'>No orders yet...!!!</p></td>
+                                <td colSpan={7} className='text-red-600 px-4 py-3.5 text-[.98rem]  capitalize break-all whitespace-normal text-center'><p className='my-2'>No orders yet...!!!</p></td>
                             </tr>
                         ):
                         [1,2,3,4,5].map((val)=>(
