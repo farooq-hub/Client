@@ -14,7 +14,7 @@ import { providerPost } from '../Services/providerApi';
 
 
 
-const Login = ({role}) => {
+const BaseLogin = ({role}) => {
 
     const navigate = useNavigate()
     const dispatch = useDispatch();
@@ -146,8 +146,8 @@ const Login = ({role}) => {
   );
 }
 
-Login.propTypes = {
+BaseLogin.propTypes = {
     role: PropTypes.string.isRequired, // Define the expected type and mark it as required
 };
 
-export default Login
+export default BaseLogin
