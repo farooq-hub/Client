@@ -12,9 +12,7 @@ import { adminPost } from '../Services/adminApi';
 import { usersPost } from '../Services/userApi';
 import { providerPost } from '../Services/providerApi';
 
-Login.propTypes = {
-    role: PropTypes.string.isRequired, // Define the expected type and mark it as required
-  };
+
 
 function Login({role}) {
 
@@ -148,5 +146,8 @@ function Login({role}) {
   );
 }
 
+Login.propTypes = {
+    role: PropTypes.string.isRequired, // Define the expected type and mark it as required
+};
 
 export default Login
