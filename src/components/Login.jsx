@@ -14,7 +14,7 @@ import { providerPost } from '../Services/providerApi';
 
 
 
-function Login({role}) {
+const Login = ({role}) => {
 
     const navigate = useNavigate()
     const dispatch = useDispatch();
