@@ -2,7 +2,7 @@ import { Routes, Route,Navigate} from "react-router-dom";
 import Home from "../Pages/Admin/HomePage" 
 import Service from "../Pages/Admin/Service"
 import User from "../Pages/Admin/User" 
-import Login from "../Components/Login"
+import Login from "../Components/login"
 import Provider from "../Pages/Admin/Provider";
 import { useSelector } from "react-redux";
 import OrderPage from "../Pages/Admin/OrderPage";
