@@ -1,6 +1,6 @@
 // import React from 'react'
 import { Routes, Route,Navigate} from "react-router-dom";
-import LoginForm from "../Components/Login"
+import LoginForm from "../Components/BaseLogin"
 import Register from "../Components/User/Register"
 import { useSelector } from "react-redux";
 import OtpLogin from "../Components/OtpLogin";
