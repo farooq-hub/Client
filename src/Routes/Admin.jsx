@@ -1,6 +1,6 @@
 import { Routes, Route,Navigate} from "react-router-dom";
 import Home from "../Pages/Admin/HomePage" 
-import Service from "../Pages/Admin/Service"
+import Service from "../Pages/Admin/AdminService"
 import User from "../Pages/Admin/User" 
 import Login from "../Components/BaseLogin"
 import Provider from "../Pages/Admin/Provider";

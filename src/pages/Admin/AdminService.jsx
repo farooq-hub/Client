@@ -1,7 +1,7 @@
 import Sidebar from "../../Components/Admin/Sidebar";
 import ServiceList from "../../Components/Admin/ServiceList";
 
-const Service = () => {
+const AdminService = () => {
 
     return(
         <div className='bg-gray-100 min-h-screen min-w-screen font-sans overflow-hidden'>
@@ -14,4 +14,4 @@ const Service = () => {
 
 }
 
-export default Service;
+export default AdminService;
