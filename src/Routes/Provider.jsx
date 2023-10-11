@@ -1,13 +1,13 @@
 import { Routes, Route,Navigate} from "react-router-dom";
 import { useSelector } from "react-redux";
-import Login from "../components/Login"
-import Register from "../components/Provider/Register"
-import ProviderHome from "../pages/Provider/Home";
-import ProfilePage from "../pages/Provider/Profile";
-import PostPage from "../pages/Provider/Posts";
-import OptionPage from "../pages/Provider/OptionPage";
-import OrderPage from "../pages/Provider/OrderPage";
-import SingleOrderPage from "../pages/Provider/SingleOrderPage";
+import Login from "../Components/Login"
+import Register from "../Components/Provider/Register"
+import ProviderHome from "../Pages/Provider/Home";
+import ProfilePage from "../Pages/Provider/Profile";
+import PostPage from "../Pages/Provider/Posts";
+import OptionPage from "../Pages/Provider/OptionPage";
+import OrderPage from "../Pages/Provider/OrderPage";
+import SingleOrderPage from "../Pages/Provider/SingleOrderPage";
 
 
 const Provider = () => {

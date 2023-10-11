@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
-import Modal from '../customComponent/Modal'
+import Modal from '../CustomComponent/Modal'
 import ImageSlider from '../ImageSlider'
 import { toast } from 'react-toastify';
 import { BiImageAdd } from 'react-icons/bi';
 import Select from 'react-select';
 import { providerGet, providerPatch, providerPost } from '../../Services/providerApi';
-import Button from '../customComponent/Button';
+import Button from '../CustomComponent/Button';
 import { useSelector } from 'react-redux';
 import { IoArrowUndoCircleOutline, IoFlagSharp } from 'react-icons/io5';
 import { AiOutlineWarning } from 'react-icons/ai';

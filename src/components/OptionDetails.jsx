@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { RiDeleteBin6Line } from 'react-icons/ri';
-import Button from './customComponent/Button';
+import Button from './CustomComponent/Button';
 
 function OptionDetails({options,role}) {
     return (

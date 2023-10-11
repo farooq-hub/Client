@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import Home from "../../components/User/Home";
-import Sidebar from "../../components/User/Sidebar";
-import Button from "../../components/customComponent/Button";
+import Home from "../../Components/User/Home";
+import Sidebar from "../../Components/User/Sidebar";
+import Button from "../../Components/CustomComponent/Button";
 import { SlArrowUp } from "react-icons/sl";
 
 const HomePage = () => {

@@ -1,5 +1,5 @@
-import Dashboard from '../../components/Admin/Dashboard';
-import Sidebar from '../../components/Admin/Sidebar';
+import Dashboard from '../../Components/Admin/Dashboard';
+import Sidebar from '../../Components/Admin/Sidebar';
 
 
 const Home = () => {

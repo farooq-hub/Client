@@ -1,6 +1,6 @@
-import Sidebar from '../../components/User/Sidebar'
-import Providers from '../../components/User/Providers'
-import Payment from '../../components/User/Payment'
+import Sidebar from '../../Components/User/Sidebar'
+import Providers from '../../Components/User/Providers'
+import Payment from '../../Components/User/Payment'
 
 function PyamentPage() {
   return (

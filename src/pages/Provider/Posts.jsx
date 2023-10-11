@@ -1,5 +1,5 @@
-import Post from "../../components/Provider/PostList";
-import Sidebar from "../../components/Provider/Sidebar";
+import Post from "../../Components/Provider/PostList";
+import Sidebar from "../../Components/Provider/Sidebar";
 
 
 const PostPage = () => {

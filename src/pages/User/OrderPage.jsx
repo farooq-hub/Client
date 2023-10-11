@@ -1,5 +1,5 @@
-import Sidebar from '../../components/User/Sidebar'
-import OrderList from '../../components/OrderList'
+import Sidebar from '../../Components/User/Sidebar'
+import OrderList from '../../Components/OrderList'
 
 const OrderPage = () => {
   return (

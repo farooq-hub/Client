@@ -1,5 +1,5 @@
-import Options from '../../components/Provider/Options'
-import Sidebar from '../../components/Provider/Sidebar'
+import Options from '../../Components/Provider/Options'
+import Sidebar from '../../Components/Provider/Sidebar'
 
 const OptionPage = () => {
   return (

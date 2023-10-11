@@ -7,7 +7,7 @@ import { AiFillHeart, AiOutlineHeart, AiOutlineMessage, AiOutlineSend } from "re
 import { usersPatch, usersPost } from "../Services/userApi";
 import { providerPatch, providerPost } from "../Services/providerApi";
 import Spinner from "./Spinner";
-import Button from "./customComponent/Button";
+import Button from "./CustomComponent/Button";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 

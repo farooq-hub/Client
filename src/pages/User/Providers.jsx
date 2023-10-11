@@ -1,6 +1,6 @@
 import React from 'react'
-import Sidebar from '../../components/User/Sidebar'
-import Providers from '../../components/User/Providers'
+import Sidebar from '../../Components/User/Sidebar'
+import Providers from '../../Components/User/Providers'
 
 function ProvidersPage() {
   return (

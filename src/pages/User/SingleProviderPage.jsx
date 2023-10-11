@@ -1,6 +1,6 @@
 import React from 'react'
-import Sidebar from '../../components/User/Sidebar'
-import SingleProvider from '../../components/User/SingleProvider'
+import Sidebar from '../../Components/User/Sidebar'
+import SingleProvider from '../../Components/User/SingleProvider'
 
 const SingleProviderPage = () => {
   return (

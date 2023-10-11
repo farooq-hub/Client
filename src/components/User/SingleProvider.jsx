@@ -9,7 +9,7 @@ import Service from '../Service';
 import Spinner from '../Spinner';
 import { usersGet } from '../../Services/userApi';
 import useWidthSize from '../../utils/useWidthSize';
-import Button from '../customComponent/Button';
+import Button from '../CustomComponent/Button';
 import { useSelector } from 'react-redux';
 import SinglePost from '../SinglePost';
 import OptionByService from '../OptionByService';

@@ -1,5 +1,5 @@
-import Sidebar from "../../components/Admin/Sidebar";
-import UserList from "../../components/Admin/UserList";
+import Sidebar from "../../Components/Admin/Sidebar";
+import UserList from "../../Components/Admin/UserList";
 
 const User = () => {
     return(

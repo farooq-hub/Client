@@ -1,5 +1,5 @@
-import Sidebar from "../../components/Provider/Sidebar";
-import Profile from "../../components/Provider/profile";
+import Sidebar from "../../Components/Provider/Sidebar";
+import Profile from "../../Components/Provider/profile";
 
 
 

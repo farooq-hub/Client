@@ -1,18 +1,19 @@
 // import React from 'react'
 import { Routes, Route,Navigate} from "react-router-dom";
-import Login from "../components/Login"
-import Register from "../components/User/Register"
+import Login from "../Components/Login"
+import Register from "../Components/User/Register"
 import { useSelector } from "react-redux";
-import OtpLogin from "../components/OtpLogin";
-import ProfilePage from "../pages/User/Profile";
-import ProvidersPage from "../pages/User/Providers";
-import HomePage from "../pages/User/HomePage";
-import CheckoutPage from "../pages/User/CheckOut";
-import PyamentPage from "../pages/User/PyamentPage";
-import OrderPage from "../pages/User/OrderPage";
-import SingleOrderPage from "../pages/User/SingleOrderPage";
-import ChatPage from "../pages/User/ChatPage";
-import SingleProviderPage from "../pages/User/SingleProviderPage";
+import OtpLogin from "../Components/OtpLogin";
+import ProfilePage from "../Pages/User/Profile";
+import ProvidersPage from "../Pages/User/Providers";
+import HomePage from "../Pages/User/HomePage";
+import CheckoutPage from "../Pages/User/CheckOut";
+import PyamentPage from "../Pages/User/PyamentPage";
+import OrderPage from "../Pages/User/OrderPage";
+import SingleOrderPage from "../Pages/User/SingleOrderPage";
+import ChatPage from "../Pages/User/ChatPage";
+import SingleProviderPage from "../Pages/User/SingleProviderPage";
+
 
 
 

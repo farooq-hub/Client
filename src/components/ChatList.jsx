@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import { providerGet } from '../Services/providerApi';
 import { usersGet } from '../Services/userApi';
-import Button from './customComponent/Button';
+import Button from './CustomComponent/Button';
 import { AiFillMessage, AiOutlineClose, AiOutlineMessage } from 'react-icons/ai';
-import Modal from './customComponent/Modal';
+import Modal from './CustomComponent/Modal';
 import avatar from '../assets/very_big_Luffy.jpg';
 
 

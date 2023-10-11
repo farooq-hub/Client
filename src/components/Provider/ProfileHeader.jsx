@@ -2,9 +2,9 @@ import  { useState } from 'react'
 import PropTypes from 'prop-types';
 import coverPic from "../../assets/pexels-sandra-filipe-7087668.jpg"
 import  avatar  from "../../assets/very_big_Luffy.jpg"
-import Button from '../customComponent/Button';
+import Button from '../CustomComponent/Button';
 import { SlLocationPin } from 'react-icons/sl';
-import Modal from '../customComponent/Modal';
+import Modal from '../CustomComponent/Modal';
 import { AiOutlineClose } from 'react-icons/ai';
 import { TbCurrentLocation } from 'react-icons/tb';
 import { useNavigate } from 'react-router-dom';

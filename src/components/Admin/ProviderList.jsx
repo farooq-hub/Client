@@ -3,8 +3,8 @@ import { toast } from 'react-toastify';
 import { adminGet, adminPatch } from "../../Services/adminApi"
 import { RiEyeLine } from "react-icons/ri";
 import Post from "../Provider/PostList";
-import Modal from "../customComponent/Modal";
-import Button from "../customComponent/Button";
+import Modal from "../CustomComponent/Modal";
+import Button from "../CustomComponent/Button";
 import { TbCurrentLocation } from "react-icons/tb";
 import { AiOutlineClose } from "react-icons/ai";
 import { MdMiscellaneousServices } from "react-icons/md";

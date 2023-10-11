@@ -1,13 +1,13 @@
 // import React from 'react'
 import { Routes, Route,Navigate} from "react-router-dom";
-import Home from "../pages/Admin/Home" 
-import Service from "../pages/Admin/Service"
-import User from "../pages/Admin/User" 
-import Login from "../components/Login"
-import Provider from "../pages/Admin/Provider";
+import Home from "../Pages/Admin/Home" 
+import Service from "../Pages/Admin/Service"
+import User from "../Pages/Admin/User" 
+import Login from "../Components/Login"
+import Provider from "../Pages/Admin/Provider";
 import { useSelector } from "react-redux";
-import OrderPage from "../pages/Admin/OrderPage";
-import SingleOrderPage from "../pages/Admin/SingleOrderPage";
+import OrderPage from "../Pages/Admin/OrderPage";
+import SingleOrderPage from "../Pages/Admin/SingleOrderPage";
 
 
 const Admin = () => {

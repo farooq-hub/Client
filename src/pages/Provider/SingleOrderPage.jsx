@@ -1,5 +1,5 @@
-import SingleOrder from '../../components/SingleOrder'
-import Sidebar from '../../components/User/Sidebar'
+import SingleOrder from '../../Components/SingleOrder'
+import Sidebar from '../../Components/User/Sidebar'
 
 
 const SingleOrderPage = () => {

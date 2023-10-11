@@ -4,7 +4,7 @@ import TransactionChart from "../TransactionChart"
 import OrderChart from "../OrderChart"
 import { useNavigate } from "react-router-dom"
 import OrderList from "../OrderList"
-import Button from "../customComponent/Button"
+import Button from "../CustomComponent/Button"
 import { AiOutlineArrowRight } from "react-icons/ai"
 import { useEffect } from "react"
 

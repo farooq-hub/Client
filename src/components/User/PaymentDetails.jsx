@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import Button from '../customComponent/Button';
+import Button from '../CustomComponent/Button';
 import { IoIosArrowBack } from 'react-icons/io';
 
 

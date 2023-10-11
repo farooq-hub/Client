@@ -8,7 +8,7 @@ import {  GrPowerShutdown } from 'react-icons/gr'
 import { HiOutlineUserGroup } from 'react-icons/hi'
 import {AiOutlineUser} from 'react-icons/ai'
 import { useLocation, useNavigate } from "react-router-dom";
-import Button from "../customComponent/Button";
+import Button from "../CustomComponent/Button";
 import { IoWalletOutline } from "react-icons/io5";
 
 

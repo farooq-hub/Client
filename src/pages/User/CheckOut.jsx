@@ -1,5 +1,5 @@
-import Checkout from "../../components/User/CheckoutPage";
-import Sidebar from "../../components/User/Sidebar";
+import Checkout from "../../Components/User/CheckoutPage";
+import Sidebar from "../../Components/User/Sidebar";
 
 const CheckoutPage = () => {
   console.log('skjfgkjsgkjg');

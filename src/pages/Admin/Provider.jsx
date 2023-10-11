@@ -1,5 +1,5 @@
-import Sidebar from "../../components/Admin/Sidebar";
-import ProviderList from "../../components/Admin/ProviderList";
+import Sidebar from "../../Components/Admin/Sidebar";
+import ProviderList from "../../Components/Admin/ProviderList";
 
 const Provider = () => {
     return (

@@ -12,8 +12,8 @@ import Spinner from "./Spinner";
 import Comment from "./Comment";
 import { adminGet } from "../Services/adminApi";
 import { usersGet, usersPatch, usersPost } from "../Services/userApi";
-import Button from "./customComponent/Button";
-import Modal from "./customComponent/Modal";
+import Button from "./CustomComponent/Button";
+import Modal from "./CustomComponent/Modal";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 

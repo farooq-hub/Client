@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import { usersGet } from '../Services/userApi';
-import Modal from './customComponent/Modal';
+import Modal from './CustomComponent/Modal';
 import { toast } from 'react-toastify';
 import SingleOption from './SingleOption';
 

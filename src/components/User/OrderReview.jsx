@@ -1,8 +1,8 @@
 import { useRef, useState } from 'react'
 import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
-import Modal from '../customComponent/Modal';
-import Button from '../customComponent/Button';
+import Modal from '../CustomComponent/Modal';
+import Button from '../CustomComponent/Button';
 import StarRating from '../StarRating ';
 import { usersPost } from '../../Services/userApi';
 

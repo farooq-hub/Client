@@ -1,6 +1,6 @@
 import  { useEffect, useState } from 'react'
 import PropTypes from 'prop-types';
-import Button from './customComponent/Button';
+import Button from './CustomComponent/Button';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
 import { toast } from 'react-toastify';

@@ -8,7 +8,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { TbTableOptions } from "react-icons/tb";
 import { HiMiniClipboardDocumentList } from "react-icons/hi2";
 import { useSelector } from "react-redux";
-import Button from "../customComponent/Button";
+import Button from "../CustomComponent/Button";
 import { IoWalletOutline } from "react-icons/io5";
 
 const Sidebar = () => {

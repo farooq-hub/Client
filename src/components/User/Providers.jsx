@@ -3,7 +3,7 @@ import { usersGet } from "../../Services/userApi";
 import { v4 as uuidv4 } from 'uuid';
 import ProviderCard from "./ProviderCard";
 import ProviderCardSkeleton from "../Loading.jsx/ProviderCardSkeleton";
-import Button from "../customComponent/Button";
+import Button from "../CustomComponent/Button";
 import { RiFilterFill } from "react-icons/ri";
 import { AiOutlineClose } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";

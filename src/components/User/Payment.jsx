@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
 import { RxCrossCircled } from 'react-icons/rx';
 import { AiOutlineArrowLeft, AiOutlineArrowRight, AiOutlineCheckCircle } from 'react-icons/ai';
-import Button from '../customComponent/Button';
+import Button from '../CustomComponent/Button';
 
 
 

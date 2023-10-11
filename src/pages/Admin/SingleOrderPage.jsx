@@ -1,5 +1,5 @@
-import SingleOrder from '../../components/SingleOrder'
-import Sidebar from '../../components/Admin/Sidebar'
+import SingleOrder from '../../Components/SingleOrder'
+import Sidebar from '../../Components/Admin/Sidebar'
 
 
 

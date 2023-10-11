@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
 import { BiGridAlt } from "react-icons/bi";
 import { useEffect, useState } from 'react';
-import Button from '../customComponent/Button';
+import Button from '../CustomComponent/Button';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { usersGet } from '../../Services/userApi';
 import SingleOption from '../SingleOption';
-import Modal from '../customComponent/Modal';
+import Modal from '../CustomComponent/Modal';
 import { toast } from 'react-toastify';
 import { IoIosArrowForward } from 'react-icons/io';
 

@@ -1,5 +1,5 @@
-import Sidebar from "../../components/Admin/Sidebar";
-import ServiceList from "../../components/Admin/ServiceList";
+import Sidebar from "../../Components/Admin/Sidebar";
+import ServiceList from "../../Components/Admin/ServiceList";
 
 const Service = () => {
 

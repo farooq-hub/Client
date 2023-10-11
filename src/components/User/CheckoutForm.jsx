@@ -1,9 +1,9 @@
 import { useState } from "react";
 import PropTypes from 'prop-types';
 import PaymentDetails from "./PaymentDetails";
-import Button from "../customComponent/Button";
+import Button from "../CustomComponent/Button";
 import { toast } from "react-toastify";
-import Modal from "../customComponent/Modal";
+import Modal from "../CustomComponent/Modal";
 import { AiOutlineClose } from "react-icons/ai";
 import { SiRazorpay } from "react-icons/si";
 import { BsStripe } from "react-icons/bs";
