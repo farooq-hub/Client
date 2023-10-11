@@ -13,7 +13,7 @@ function ProfilePage() {
         if (targetDiv) {
           window.scrollTo({ behavior: 'smooth', top: document.body.scrollHeight });
         }
-      }, 100); // Adjust the delay as needed
+      }, 100);
     }
   }, [location.pathname, location.hash]);
 
