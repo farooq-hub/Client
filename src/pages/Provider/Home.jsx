@@ -83,7 +83,7 @@ const Home = () => {
             </div>
           </header>
 
-            <div className="flex md:ml-64 lg:ml-64">
+            <div className=" md:ml-64 lg:ml-64">
                 <Dashboard/>
             </div>
         </div>

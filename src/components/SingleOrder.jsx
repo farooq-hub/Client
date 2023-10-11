@@ -10,6 +10,7 @@ import Button from './customComponent/Button';
 import Modal from './customComponent/Modal';
 import { AiOutlineWarning } from 'react-icons/ai';
 import { RiFeedbackLine } from 'react-icons/ri';
+import OrderReview from './User/OrderReview';
 
 const SingleOrder = ({role}) => {
 
@@ -32,7 +33,11 @@ const SingleOrder = ({role}) => {
             else if(role =='provider')result = await providerGet(`/order/${id}`)
             else if(role =='admin')result = await adminGet(`/order/${id}`);
                 console.log(result);
-                if(result?.orderData?.status == 'Completed') setModal('feedback')
+                if(result?.orderData?.status == 'Completed'&&
+                        !result?.orderData?.providerId?.feedback.some(feedbackEntry => feedbackEntry.userId === result?.orderData?.customerId)){
+                    
+                    console.log('ADSGHDAUXGAKJDHADJKHADJH',result?.orderData?.providerId?.feedback);
+                    setModal('reviewModal')}
                 if(result?.orderData)setOrderData(result.orderData)
                 else role =='user'?navigate('/orders'):role =='provider'?navigate('/provider/orders'):role =='admin'?navigate('/admin/orders'):""
                 isCanclation(result?.orderData?.orderCreatedAt,result?.orderData?.status)
@@ -116,8 +121,8 @@ const SingleOrder = ({role}) => {
                                 </div>
                             </>
                             :[1,2,3,4].map((val)=>(
-                            <div key={val+199999} className='flex space-x-5'><p className='w-56 h-8 bg-gray-300 animate-pulse'></p>
-                                <p className='w-56 h-8 bg-gray-300 animate-pulse'></p><p className='w-4'></p>
+                            <div key={val+199999} className='flex space-x-5'><p className='w-56 h-8 bg-gray-300 animate-pulse'/>
+                                <p className='w-56 h-8 bg-gray-300 animate-pulse'/><p className='w-4'/>
                             </div>
                             ))
                         }
@@ -167,7 +172,7 @@ const SingleOrder = ({role}) => {
                     <div className="max-h-56 xl:max-h-72 px-4 py-6 border-b overflow-y-scroll">
                         {loading !='getingOrderData' && orderData?.options? 
                             <OptionDetails options={orderData.options} role={'order'}/>
-                        :<div className='animate-pulse w-full h-20 bg-gray-200'></div>}
+                        :[1,2].map((val)=><div key={val+199999999} className='animate-pulse my-2 w-full h-20 bg-gray-200'/>)}
                     </div>
                 </div>
                 <div className='w-full border-b sm:p-2'>
@@ -248,15 +253,19 @@ const SingleOrder = ({role}) => {
                             Wishing you all the best in your future endeavors, and <br/> thank you for allowing us to be a part of your event!
                         </p>
                     </div> 
-                    <div className='flex justify-center mx-4 text-gray-600 font-normal tex-sm'>
-                        <Button className={'flex font-serif hover:underline items-center '}
+                    <div className='flex justify-center mx-4 text-gray-600 font-normal tex-sm'>{orderData?.providerId?.feedback.length&&
+                        orderData?.providerId?.feedback.some(feedbackEntry => feedbackEntry.userId === orderData.customerId)?null:
+                        <Button className={'flex font-serif hover:underline items-center '} handelEvent={()=>setModal('reviewModal')}
                         content={<>We&#39;d love to hear about your <span className='text-blue-600'>&nbsp;experience and any feedback&nbsp;</span> 
                         you may have.<span className='text-blue-600 mx-2 text-lg'><RiFeedbackLine/></span></>}/>
-                    
+                    }
                     </div> 
                     </>
                 :''}
             </div>}
+
+            { modal ==='reviewModal'?<OrderReview setOrderData={setOrderData} setModal={setModal} role={'addFeedback'} providerId={orderData?.providerId?._id}/>:''}
+        
         { modal ==='cancelOrder'?
             <Modal closeModal={()=>setModal('')}modalHeader={
                     <div className="flex items-center justify-center border-b"><Button content={<AiOutlineWarning className="text-7xl text-red-600 m-4"/>}/>

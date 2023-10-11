@@ -15,6 +15,7 @@ import PropTypes from 'prop-types';
         onClick={handleEvent}
       >
         <img
+          loading="lazy"
           src={post.postImages[0]}
           className="absolute inset-0 object-cover w-full h-full"
         />

@@ -12,6 +12,7 @@ import PyamentPage from "../pages/User/PyamentPage";
 import OrderPage from "../pages/User/OrderPage";
 import SingleOrderPage from "../pages/User/SingleOrderPage";
 import ChatPage from "../pages/User/ChatPage";
+import SingleProviderPage from "../pages/User/SingleProviderPage";
 
 
 
@@ -24,12 +25,13 @@ const User = () => {
         <Route path="/orders"  element={userAuth ? <OrderPage/> : <Navigate to='/login'/>}/>
         <Route path="/payments"  element={userAuth ? <PyamentPage/> : <Navigate to='/login'/>}/>
         <Route path="/profile" element={userAuth ? <ProfilePage/> : <Navigate to='/login' /> }/>
+        <Route path="/providers/:providerId" element={userAuth ? <SingleProviderPage/> : <Navigate to='/login' /> }/>
         <Route path="/providers" element={userAuth ? <ProvidersPage/> : <Navigate to='/login' /> }/>
         <Route path="/providers/checkout" element={userAuth ? <CheckoutPage/> : <Navigate to='/login' /> }/>
         <Route path="/otpLogin" element={userAuth ? <Navigate to='/' /> : <OtpLogin role='user'/> }/>
         <Route path="/login" element={userAuth ? <Navigate to='/' /> : <Login role='user'/> }/>
         <Route path="/register"  element={userAuth ? <Navigate to='/' /> : <Register />}/>
-        <Route path="/" element={<HomePage/>}/>
+        <Route path="/" element={userAuth ? <HomePage/> :<Navigate to='/login'/>}/>
 
     </Routes>
   )

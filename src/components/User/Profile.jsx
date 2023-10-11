@@ -11,7 +11,7 @@ import OrderList from "../OrderList"
 import { AiOutlineArrowRight } from "react-icons/ai"
 import WalletHistory from "../WalletHistery"
 import { useNavigate } from "react-router-dom"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { updateUserData } from "../../store/slice/user"
 
 
@@ -20,16 +20,15 @@ import { updateUserData } from "../../store/slice/user"
 const Profile = () => {
   
   
-  const [userData,setUserData] = useState({})
-  const [updateUser,setupdateUser] = useState(false)
+    const [userData,setUserData] = useState({})
+    const [updateUser,setupdateUser] = useState(false)
   const [loading,setLoading] = useState('')
   
   // const [remainter,setRemainter] = useState(false)
   const img = useRef()
   const navigate = useNavigate()
   const dispatch = useDispatch();
-
-
+  const reduxUserData = useSelector((state) => state.user.userData)
     const [formData, setFormData] = useState({
         name: '',
         email:'',
@@ -40,7 +39,8 @@ const Profile = () => {
     let imageSrc = formData.file ? URL.createObjectURL(formData.file) : (userData?.image || avatar );
 
     const getUserData =async ()=>{
-      setLoading('getingUserData')
+        setUserData(reduxUserData)
+        !reduxUserData?setLoading('getingUserData'):''
         await usersGet('/profile')
         .then((res)=>{
             res ? setUserData(res.userData) : null
@@ -96,7 +96,7 @@ const Profile = () => {
             console.log(formData);
             await usersPatch('/editProfile',formData,img).then((res)=>{
                 res.userData? setUserData(res.userData):''
-                res.userData? dispatch(updateUserData({userData: {...res.userData,walletHistory: null}})):null
+                res.userData? dispatch(updateUserData({userData:res.userData})):null
                 userData.image ? setUserData(prevUserData => ({
                     ...prevUserData,
                     image:res.image

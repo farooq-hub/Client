@@ -14,7 +14,7 @@ const ServiceOptions = ({setCheckout,selectedOption,setSelectedOption,provider})
     const [activeTab, setActiveTab] = useState('')
     const [loading, setLoading] = useState('')
     const [optionList, setOptionList] = useState([])
-    const [count, setCount] = useState(1)
+    const [count, setCount] = useState(100)
     const [modal, setModal] = useState('')
     const [clickedOption,setClickedOption] = useState({})
     const location =  useLocation()
@@ -51,7 +51,7 @@ const ServiceOptions = ({setCheckout,selectedOption,setSelectedOption,provider})
     }, []);
 
     return (
-        <div className='w-full bg-white'>
+        <div className='w-full bg-white '>
             <div className=" bg-gray-200 shadow-sm mb-2 pt-4 pb-5">
                 <h1 className="text-2xl mb-6 font-serif text-center text-gray-800 capitalize lg:text-[1.99rem]">Service Options</h1>
                 <p className="max-w-2xl mx-auto mb-2 font-medium text-center text-gray-500 ">Handpick the elements destined for your event&apos;s stage,
@@ -64,7 +64,7 @@ const ServiceOptions = ({setCheckout,selectedOption,setSelectedOption,provider})
                         handelEvent={() => setActiveTab(`${service._id}`)}content={<><BiGridAlt /><span className="hidden lg:inline-block ml-2">{service.serviceName}</span></>}/>
                 )}
             </div>
-            <div className="grid mb-16 md:mb-20 mx-2 overflow-y-scroll max-h-[40rem] lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-1 lg:gap-8">
+            <div className="grid mb-16 md:mb-20 mx-2  max-h-[40rem] lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-1 lg:gap-8">
                 {loading !== 'get-option'?
                     ( optionList.length !=0 ?optionList.filter((option) => activeTab === option.serviceId ).map((option) => (
                         <SingleOption key={option._id} className={'max-h-[36rem] overflow-hidden'}
@@ -84,7 +84,7 @@ const ServiceOptions = ({setCheckout,selectedOption,setSelectedOption,provider})
                         </div>)
                 }
             </div>
-            {modal == "selectOption" ?<Modal closeModal={()=>{setModal('');setClickedOption({});setCount(1)}}
+            {modal == "selectOption" ?<Modal closeModal={()=>{setModal('');setClickedOption({});setCount(100)}}
                 modalHeader={
                     <div className='text-center my-2'>
                         <h1 className='text-black font-semibold text-xl my-4'>To select option</h1><hr />
@@ -95,7 +95,7 @@ const ServiceOptions = ({setCheckout,selectedOption,setSelectedOption,provider})
                         <p className="m-2 text-[.95rem] font-normal text-gray-950">&quot;Whisper to us the number of souls partaking in this exquisite feast, for with each count, 
                         we unveil the poetry of pricing, where every plate becomes a verse in the grand symphony of your event&#39;s delight.&quot;</p>
                         <div className="flex items-center w-56 mx-auto my-2">
-                            <input type="number" min={1} id="title" name="count" placeholder="Enter the number here" value={count} onChange={(e)=>setCount(e.target.value)}
+                            <input type="number" min={100} id="title" name="count" placeholder="Enter the number here" value={count} onChange={(e)=>setCount(e.target.value)}
                                 className="flex-1 block h-16 text-center px-4 text-sm  bg-white border border-gray-300  rounded-md "
                             />
                         </div>
@@ -104,11 +104,11 @@ const ServiceOptions = ({setCheckout,selectedOption,setSelectedOption,provider})
                     <div className="flex items-center justify-center gap-4 my-4">
                         <Button type="button" className="text-gray-500 bg-white hover:bg-gray-100 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 "
                         content={'Close'} handelEvent={()=>{setModal('');
-                        setClickedOption({});setCount(1)}}/>
-                        <Button type="button" handelEvent={!isNaN(count) && !isNaN(parseFloat(count)) && count>=1?()=>{
+                        setClickedOption({});setCount(100)}}/>
+                        <Button type="button" handelEvent={!isNaN(count) && !isNaN(parseFloat(count)) && count>=100?()=>{
                             setLoading('selectingOption');
                             setSelectedOption((pre)=>[...pre,{...clickedOption,count:count,totalAmount:(count*clickedOption.price)}]);
-                            setLoading('');setModal('');setClickedOption({});setCount(1)}
+                            setLoading('');setModal('');setClickedOption({});setCount(100)}
                             :()=>toast.warn('Enter a valid number')}  
                         className={`text-white bg-red-600 hover:bg-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2 duration-[500ms,800ms]`}content={
                             <div className="flex items-center justify-center">{loading === 'selectingOption' ? (
@@ -117,7 +117,7 @@ const ServiceOptions = ({setCheckout,selectedOption,setSelectedOption,provider})
                     </div>}
             />:''}
         <div className='bg-slate-200 h-16 md:h-20 w-full bottom-0 fixed'>
-            <div className='flex justify-end h-full items-center mr-72'>
+            <div className='flex justify-end h-full items-center md:mr-72'>
                 <p className='md:text-xl text-lg  text-gray-700 font-medium'>Grand Total : <span className='underline'>₹ {selectedOption.length?`${selectedOption.reduce((accumulator, option) => {return accumulator + option.totalAmount}, 0)}.00`:0.00}</span></p>
                 {selectedOption.length?
                     <Button content={<p className='flex items-center'>Checkout <span className='ml-2 text-lg'><IoIosArrowForward/></span></p>} handelEvent={()=>setCheckout(true)} type={'button'}

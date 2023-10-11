@@ -67,7 +67,7 @@ const Sidebar = () => {
                         <p className="text-sm font-semibold pb-6">Lets make..</p>
                     </div>
                     <NavItem icon={<FaHome/>} active={location.pathname == '/'?true:false} name={"HOME"} path={'/'} />
-                    <NavItem icon={<HiOutlineUserGroup/>}  active={location.pathname == '/providers'?true:false} name={"PROVIDERS"} path={'/providers'} />
+                    <NavItem icon={<HiOutlineUserGroup/>}  active={location.pathname.startsWith('/providers')} name={"PROVIDERS"} path={'/providers'} />
                     {/* <NavItem icon={faComment} name={'CHAT'} path={'/chat'} /> */}
                     {/* <NavItem icon={faUser} name={"PROFILE"} path={'/profile'} /> */}
                     {/* <NavItem icon={faCircleInfo} name={'MORE'} path={'/more'} /> */}
@@ -86,7 +86,7 @@ const Sidebar = () => {
                         <div className="absolute z-50  bottom-3 left-3 flex ">
                             <Button className="text-lg font-mono flex items-center hover:underline text-gray-900 rounded space-x-2 transition duration-100"
                                 handelEvent={() => navigate('/profile#transationHistory')} content={<>
-                                <IoWalletOutline className="text-2xl text-blue-600"/><span className="mx-4">:</span>{wallet?<span>₹ {wallet}.00</span>:
+                                <IoWalletOutline className="text-2xl text-blue-600"/><span className="mx-4">:</span>{wallet?<span>₹ {wallet}.00</span>:wallet==0?<span>₹ 0.00</span>:
                                 <div className="h-5 w-5 border-2 rounded-full bg-white border-t-transparent animate-spin border-gray-900"></div>}</>}/>
                         </div>       
                         : 

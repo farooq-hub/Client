@@ -1,8 +1,25 @@
 import DashboardCards from "../DashboardCards"
 import { MdWorkHistory } from "react-icons/md"
+import TransactionChart from "../TransactionChart"
+import OrderChart from "../orderChart"
+import Button from "../customComponent/Button"
+import OrderList from "../OrderList"
+import { useNavigate } from "react-router-dom"
+import { AiOutlineArrowRight } from "react-icons/ai"
+import { useEffect } from "react"
+import { useSelector } from "react-redux"
+import Transation from "./Transation"
 
 
 const Dashboard = () => {
+
+  const provider = useSelector((state) => state.provider.providerData);
+
+  const navigate = useNavigate()
+  
+  useEffect(()=>{
+
+  },[])
 
   return (
     <>
@@ -20,6 +37,20 @@ const Dashboard = () => {
                 <DashboardCards icon={<MdWorkHistory className="text-gray-300"/>}/>
             </div>
         </div> 
+        <div>
+            <OrderChart/>
+        </div>
+        <div>
+            <TransactionChart/>
+        </div>
+        <div className="">
+          <OrderList role='provider' path='/dashboard' title='latest Salse'/>
+            <div  className="flex items-center justify-center p-4 w-full">
+            <Button  className={'text-center my-8 animate-bounce text-blue-800 text-[1rem]'} handelEvent={()=>navigate('/provider/orders')} content={<p className='flex items-center '>See More<span><AiOutlineArrowRight className='text-blue-600 mx-2'/></span></p>}/>
+
+            </div>
+            <Transation/>
+        </div>
 
     </>
   )

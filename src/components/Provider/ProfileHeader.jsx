@@ -8,10 +8,11 @@ import Modal from '../customComponent/Modal';
 import { AiOutlineClose } from 'react-icons/ai';
 import { TbCurrentLocation } from 'react-icons/tb';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 
 
-const ProfileHeader = ({providerData,updateOpen,role}) => {
+const ProfileHeader = ({providerData,userId,updateOpen,role}) => {
     const [placesModal,setPlacesModal] = useState(false)
     const navigate = useNavigate();
 
@@ -41,8 +42,9 @@ const ProfileHeader = ({providerData,updateOpen,role}) => {
                     <Button className={" block  rounded-md cursor-pointer hover:bg-gray-700 bg-gray-600 text-sm hover:shadow-lg font-semibold text-slate-100 hover:text-white px-6 py-2"} type={'button'} handelEvent={updateOpen} content={'Update Profile'} />
                 :role == 'user' ?<>
                 <Button className={"rounded-sm cursor-pointer hover:bg-gray-700 bg-gray-600 text-sm font-semibold text-slate-100 hover:text-white px-6 py-2"} type={'button'} handelEvent={updateOpen} content={'Message'} />
-                <Button className={"rounded-sm cursor-pointer hover:bg-gray-700 bg-gray-600 text-sm font-semibold text-slate-100 hover:text-white px-6 py-2"} type={'button'}
-                 handelEvent={()=>navigate(`/providers/checkout?id=${providerData._id}`,{state:{services:providerData.services,id:providerData._id,places:providerData.places}}) } content={'Book Now'} />
+                <Button className={"rounded-sm cursor-pointer hover:bg-gray-800 bg-gray-900 text-sm font-semibold text-slate-100 hover:text-white px-6 py-2"} type={'button'}
+                 handelEvent={userId?()=>navigate(`/providers/checkout?id=${providerData._id}`,{state:{services:providerData.services,id:providerData._id,places:providerData.places}}):
+                 ()=>{navigate('/login');toast.warn('You need to login first') }} content={'Book Now'} />
                 </>:''
                 }
             </div>
@@ -84,5 +86,6 @@ ProfileHeader.propTypes = {
     role: PropTypes.any, // Define the expected type and mark it as required
     updateOpen:PropTypes.func,
     providerData:PropTypes.object,
+    userId:PropTypes.any
 };
 export default ProfileHeader

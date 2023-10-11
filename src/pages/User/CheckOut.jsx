@@ -8,7 +8,7 @@ const CheckoutPage = () => {
         <div className=''>
             <Sidebar/>
 
-            <div className='flex md:ml-64 lg:ml-64 bg-white'>
+            <div className=' md:ml-64 lg:ml-64 bg-white'>
                 <Checkout/>
             </div>
         </div>

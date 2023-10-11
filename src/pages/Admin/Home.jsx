@@ -1,3 +1,4 @@
+import Dashboard from '../../components/Admin/Dashboard';
 import Sidebar from '../../components/Admin/Sidebar';
 
 
@@ -8,9 +9,10 @@ const Home = () => {
         
          <div className='bg-gray-100 h-screen'>
             <Sidebar />
+            
            
-            <div className='flex justify-center '>
-                <h1 className='text-5xl'>Admin Home</h1>
+            <div className='md:ml-64 lg:ml-64 '>
+                <Dashboard/>
             </div>
         </div>
 

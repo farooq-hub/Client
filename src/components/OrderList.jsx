@@ -7,7 +7,7 @@ import { AiOutlineEye } from 'react-icons/ai';
 import { useNavigate } from 'react-router-dom';
 
 
-const OrderList = ({role,path}) => {
+const OrderList = ({role,path,title}) => {
 
   const [orderList,setOrderList] = useState([])
   const [noMore,setNoMore] = useState(false)
@@ -21,8 +21,8 @@ const OrderList = ({role,path}) => {
       setLoading('getingOrders')
       let result
       if(role =='user')result = await usersGet(`/orders?skip=${orderList.length}&filter=${filter}&path=${path}&role=${role}`)
-      else if(role =='provider')result = await providerGet(`/orders?skip=${orderList.length}&filter=${filter}&role=${role}`)
-      else if(role =='admin')result = await adminGet(`/orders?skip=${orderList.length}&filter=${filter}&role=${role}`);
+      else if(role =='provider')result = await providerGet(`/orders?skip=${orderList.length}&filter=${filter}&path=${path}&role=${role}`)
+      else if(role =='admin')result = await adminGet(`/orders?skip=${orderList.length}&filter=${filter}&path=${path}&role=${role}`);
         console.log(result,result.orderList);
         if(result.orderList)setOrderList(result.orderList)
         if(result?.orderList?.length%10 != 0||path=='/profile')setNoMore(true)
@@ -40,7 +40,7 @@ const OrderList = ({role,path}) => {
   return (
     <section className="container px-4 mx-auto ">
       <div className=" bg-gray-200 shadow-sm p-4">
-        <h1 className="text-xl font-serif text-center text-gray-800 capitalize lg:text-2xl">ORDERS</h1>
+        <h1 className="text-xl font-serif text-center text-gray-800 capitalize lg:text-2xl">{title?title:'ORDERS'}</h1>
       </div>
       <div className="flex flex-col mt-4">
         <div className="inline-block min-w-full  align-middle ">
@@ -103,6 +103,7 @@ const OrderList = ({role,path}) => {
 OrderList.propTypes = {
   role: PropTypes.string.isRequired, // Define the expected type and mark it as required
   path:PropTypes.string,
+  title:PropTypes.string
 };
 
 export default OrderList

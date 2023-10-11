@@ -4,6 +4,7 @@ const initialState = {
     role:null,
     userData:null,
     token:null,
+    serviece:null
 };
 
 export const userAuthSlice = createSlice({
@@ -18,6 +19,9 @@ export const userAuthSlice = createSlice({
         updateUserData: (state,action) => {
             state.userData = action.payload.userData;
         },
+        updateServiece: (state, action) => {
+            state.serviece = action.payload.serviece;
+        },
         userLogout : (state) => {
             state.role = null;
             state.userData = null;
@@ -26,6 +30,6 @@ export const userAuthSlice = createSlice({
     }
 });
 
-export const { userLogin,updateUserData, userLogout } = userAuthSlice.actions;
+export const { userLogin, updateUserData, userLogout, updateServiece } = userAuthSlice.actions;
 
 export default userAuthSlice.reducer;

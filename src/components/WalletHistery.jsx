@@ -22,7 +22,8 @@ const WalletHistory = ({role,walletHistory}) => {
     const filteringTrnHis = (active,date) =>{
         if(!date){
             setLoading('getingWallethistoy')
-            let filteredHistory = walletHistory;
+            let filteredHistory = walletHistory.sort((a, b) => new Date(b.date) - new Date(a.date));
+
     
             if (search.from && search.to) {
                 const fromDate = new Date(search.from);
@@ -31,15 +32,19 @@ const WalletHistory = ({role,walletHistory}) => {
                     const itemDate = new Date(item.date);
                     return itemDate >= fromDate && itemDate <= toDate;
                 });
-                console.log(filteredHistory);
+                console.log(filteredHistory,'sugfs');
             }
             active?setActiveTab(active):''
-            if (active !== 'all'||activeTab !='all') {
-                active == null ?filteredHistory = filteredHistory.filter((item) => item.transactionType === activeTab):
-                filteredHistory = filteredHistory.filter((item) => item.transactionType === active)
-                console.log(filteredHistory,active,'AAA',activeTab);
+            if(active =='all'&&activeTab!='all'){
+                setTransationHistory(filteredHistory);
+            }else{
+                if (active !== 'all'||activeTab !='all') {
+                    active == null&& activeTab == 'all'?'':(active == null ?filteredHistory = filteredHistory.filter((item) => item.transactionType === activeTab):
+                    filteredHistory = filteredHistory.filter((item) => item.transactionType === active))
+                    console.log(filteredHistory,active,'AAA',activeTab);
+                }
+                setTransationHistory(filteredHistory);
             }
-            setTransationHistory(filteredHistory);
             setLoading('')
         }else {
             if(search.to == '' || search.from == '') return toast.warn('Give the both date')
@@ -61,7 +66,7 @@ const WalletHistory = ({role,walletHistory}) => {
     }
     useEffect(()=>{
         if(walletHistory) {
-            setTransationHistory(walletHistory)
+            setTransationHistory(walletHistory.sort((a, b) => new Date(b.date) - new Date(a.date)))
             setLoading('')
         }else setLoading('getingWallethistoy')
     },[walletHistory])
@@ -124,7 +129,7 @@ const WalletHistory = ({role,walletHistory}) => {
                             transationHistory?.length ? 
                             (showMor
                                     ? transationHistory
-                                    : transationHistory.slice(-5))
+                                    : transationHistory.slice(0,5))
                                 .map((tarns) => (
                                 <tr className='hover:bg-gray-200 font-medium text-gray-600 capitalize border-b' key={tarns._id}>
                                     <td className='py-1 text-sm md:break-all whitespace-normal text-left pl-4'>

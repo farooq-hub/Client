@@ -4,7 +4,7 @@ import Providers from '../../components/User/Providers'
 
 function ProvidersPage() {
   return (
-    <div className='bg-gray-100 h-screen'>
+    <div className='h-screen'>
     <Sidebar />
    
     <div className="flex md:ml-64 lg:ml-64">

@@ -52,10 +52,10 @@ const CheckoutForm = ({provider,setCheckout,selectedOption,setSelectedOption,ord
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const MobRegex = /^[6789]\d{9}$/;
         const zipRegex = /^6\d{5}$/;
-        if(name.trim().length == 0 ||!mobile|| 
-        date.trim().length == 0 || email.trim().length == 0 ||
-        address.landmark.trim().length == 0||address.city.trim().length == 0
-        ||address.zip.trim().length == 0||address.district.trim().length == 0){
+        if(!name || name.trim().length == 0||!mobile|| !date||
+        date.trim().length == 0 ||!email|| email.trim().length == 0 ||!address.landmark||
+        address.landmark.trim().length == 0||!address.city||address.city.trim().length == 0
+        ||!address.zip||address.zip.trim().length == 0||!address.district||address.district.trim().length == 0){
             setError('Fill all the fields')
             toast.warn('Fill all the fields')
             return false

@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { toast } from 'react-toastify';
 import { adminGet, adminPatch } from "../../Services/adminApi"
-import { RiDeleteBin6Line, RiEditLine, RiEyeLine } from "react-icons/ri";
+import { RiEyeLine } from "react-icons/ri";
 import Post from "../Provider/PostList";
 import Modal from "../customComponent/Modal";
 import Button from "../customComponent/Button";
 import { TbCurrentLocation } from "react-icons/tb";
 import { AiOutlineClose } from "react-icons/ai";
+import { MdMiscellaneousServices } from "react-icons/md";
 ;
 
 
@@ -208,38 +209,35 @@ const ProviderList = () => {
                                                                     className="p-2  bg-gray-700 text-white rounded-md hover:bg-gray-500"
                                                                     onClick={() => setProvider(provider,'service')}
                                                                 >Services</button>
-                                                                {servOpen || placeOpen ? (
-                                                                    <div className="fixed inset-0 z-10 overflow-y-auto">
-                                                                        <div className="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-                                                                            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-                                                                            <div className="relative inline-block px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl rtl:text-right -bg-gray-900 sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:p-6">
-                                                                                <div>
-                                                                                    <div className="mt-2 text-center">
-                                                                                        <h3 className="leading-6 text-gray-800 capitalize " id="modal-title">
-                                                                                            Services
-                                                                                        </h3>
-                                                                                        <p className="mt-2 text-sm text-gray-500 -text-gray-400">
-                                                                                            {selectedProvider && selectedProvider?.services?.length > 0 && (
-                                                                                                <div className="py-4 font-sans font-semibold">
-                                                                                                    {selectedProvider?.services.map((service) => (
-                                                                                                        <div key={service._id} className="text-center">
-                                                                                                            <h1 >{service.serviceName}<br /></h1>
-                                                                                                        </div>
-                                                                                                    ))}
-                                                                                                </div>
-                                                                                            )}
-                                                                                        </p>
-                                                                                    </div>
-                                                                                </div>
-                                                                                <div className="mt-4 sm:flex sm:items-center">
-                                                                                    <button
-                                                                                        onClick={closeModal}
-                                                                                        className="w-full px-4 py-2 mt-2 text-sm font-medium tracking-wide text-slate-100 bg-red-400 hover:bg-red-500 capitalize transition-colors duration-300 transform rounded-md sm:mt-0 sm:w-auto sm:mx-2 "
-                                                                                    >Close</button>
-                                                                                </div>
-                                                                            </div>
+                                                                {servOpen ? (
+                                                                    <Modal closeModal={closeModal}
+                                                                    modalHeader={
+                                                                        <div className="flex items-center justify-between p-5 border-b rounded-t dark:border-gray-600">
+                                                                            <h3 className="text-xl font-medium text-gray-900 dark:text-white">
+                                                                                Services
+                                                                            </h3>
+                                                                            <Button type="button" className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center" content={<AiOutlineClose/>
+                                                                        } handelEvent={closeModal}/>
+                                                                        </div>}
+                                                                    modalBody={
+                                                                        <div className="p-5">
+                                                                            <ul className="space-y-3 max-h-96 overflow-y-auto">
+                                                                            {selectedProvider && selectedProvider?.services?.length > 0 ? selectedProvider.services.map((service) => 
+                                                                                <li key={service._id} className="flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 hover:bg-gray-100 group hover:shadow">
+                                                                                    <MdMiscellaneousServices/>
+                                                                                    <span className="flex-1 ml-3 whitespace-nowrap uppercase font-mono">{service.serviceName}</span>
+                                                                                    {/* <span className="inline-flex items-center justify-center px-2 py-0.5 ml-3 text-xs font-medium text-gray-500 bg-gray-200 rounded ">Popular</span> */}
+                                                                                </li>
+                                                                                ):''}
+
+                                                                            </ul>
+                                                                        </div>}
+                                                                    modalFooter={
+                                                                        <div className="flex justify-end  items-center p-4  rounded-b">
+                                                                            <Button  handelEvent={closeModal} type="button" className="text-white bg-red-500 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 focus:z-10 " content={'Close'}/>
                                                                         </div>
-                                                                    </div>
+                                                                    }
+                                                                />
                                                                 ):null}
                                                             </div>
                                                         </td>
@@ -262,11 +260,11 @@ const ProviderList = () => {
                                                                     modalBody={
                                                                         <div className="p-5">
                                                                             <p className="text-sm font-normal text-gray-500 dark:text-gray-400">Servies Available At :</p>
-                                                                            <ul className="my-4 space-y-3">
+                                                                            <ul className="my-4 space-y-3 max-h-96 overflow-y-auto">
                                                                             {selectedProvider && selectedProvider?.places?.length > 0  && selectedProvider.places.map((val,i) => 
                                                                                 <li key={i+1931} className="flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 hover:bg-gray-100 group hover:shadow">
                                                                                     <TbCurrentLocation/>
-                                                                                    <span className="flex-1 ml-3 whitespace-nowrap">{val}</span>
+                                                                                    <span className="flex-1 ml-3 whitespace-nowrap uppercase font-mono">{val}</span>
                                                                                     {/* <span className="inline-flex items-center justify-center px-2 py-0.5 ml-3 text-xs font-medium text-gray-500 bg-gray-200 rounded ">Popular</span> */}
                                                                                 </li>
                                                                                 )}
@@ -274,8 +272,8 @@ const ProviderList = () => {
                                                                             </ul>
                                                                         </div>}
                                                                     modalFooter={
-                                                                        <div className="flex justify-center items-center p-4  border-t border-gray-200 rounded-b">
-                                                                            <Button  handelEvent={placeModalClose} type="button" className="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 " content={'Close'}/>
+                                                                        <div className="flex justify-end  items-center p-4  rounded-b">
+                                                                            <Button  handelEvent={placeModalClose} type="button" className="text-white bg-red-500 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 focus:z-10 " content={'Close'}/>
                                                                         </div>
                                                                     }
                                                                 />

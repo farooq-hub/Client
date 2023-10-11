@@ -35,6 +35,8 @@ const Home = () => {
     useEffect(()=>{
         getPost({more:false})
     },[])
+
+    
   return (
     <div className='h-96 w-full '>
         <div className="grid mx-2 grid-cols-1 lg:grid-cols-6">
@@ -64,8 +66,27 @@ const Home = () => {
                     </div>}
 
             </div>
-            <div className='border-l  border-gray-100 lg:col-span-2'>
+            <div className='border-l hidden lg:block  border-gray-100 lg:col-span-2'>
+                    <div  className="overflow-hidden bg-cover rounded-lg cursor-pointer h-96 group mt-8 w-72 ml-24 "
+                      style={{ backgroundImage: `url('https://res.cloudinary.com/dq0tq9rf5/image/upload/v1690904935/u6k5hqrrwcnqjhro1qab.jpg')` }}>
+                      <div className="flex flex-col justify-center w-full h-full px-8 py-4 transition-opacity duration-700 opacity-0 backdrop-blur-sm bg-gray-800/60 group-hover:opacity-100">
+                          <h2 className="mt-4 text-xl font-semibold text-white capitalize">Teccas Events</h2>
+                          <a className="mt-2 text-lg tracking-wider text-indigo-200 uppercase" 
+                         
+                          >Visit Provider</a>
+                      </div>
+                  </div>
+                    <div  className="overflow-hidden bg-cover rounded-lg cursor-pointer h-96 group mt-8 w-72 ml-24 "
+                    style={{ backgroundImage: `url('https://res.cloudinary.com/dq0tq9rf5/image/upload/v1690904854/gil5yqxwxlnbmaesolls.jpg')` }}>
+                    <div className="flex flex-col justify-center w-full h-full px-8 py-4 transition-opacity duration-700 opacity-0 backdrop-blur-sm bg-gray-800/60 group-hover:opacity-100">
+                        <h2 className="mt-4 text-xl font-semibold text-white capitalize">Teccas Events</h2>
+                        <a className="mt-2 text-lg tracking-wider text-indigo-200 uppercase" 
+                        
+                        >wisdeom Provider</a>
+                    </div>
+                  </div>
 
+                  
             </div>
         </div>
         {singlePost?<SinglePost post={selectedPost} setPostsData={setPostList} setSelectedPost={setSelectedPost} setIOpenPost={setSinglePost} user={userData} role={'user'}/>:''}
