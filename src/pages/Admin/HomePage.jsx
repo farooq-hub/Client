@@ -2,7 +2,7 @@ import Dashboard from '../../Components/Admin/Dashboard';
 import Sidebar from '../../Components/Admin/Sidebar';
 
 
-const Home = () => {
+const HomePage = () => {
   
     return (
 
@@ -18,4 +18,4 @@ const Home = () => {
 
     );
 };
-export default Home
+export default HomePage
