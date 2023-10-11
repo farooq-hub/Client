@@ -1,6 +1,6 @@
 import { useLocation } from 'react-router-dom';
 import Sidebar from '../../Components/User/Sidebar';
-import Profile from '../../Components/User/profile';
+import Profile from '../../Components/User/Profile';
 import { useEffect } from 'react';
 
 function ProfilePage() {
