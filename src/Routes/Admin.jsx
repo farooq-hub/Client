@@ -1,5 +1,5 @@
 import { Routes, Route,Navigate} from "react-router-dom";
-import Service from "../Pages/Admin/AdminService"
+import AdminService from "../Pages/Admin/AdminService"
 import User from "../Pages/Admin/User" 
 import Provider from "../Pages/Admin/Provider";
 import { useSelector } from "react-redux";
@@ -18,7 +18,7 @@ const Admin = () => {
         <Route path="/orders"  element={adminAuth ? <OrderPage/> : <Navigate to='/admin/login'/>}/>
         <Route path="/login" element={adminAuth ? <Navigate to='/admin' /> : <BaseLogin role='admin'  /> }/>
         <Route path="/home" element={adminAuth ? <HomePage/> : <Navigate to='/admin/login' />  }/>
-        <Route path="/services" element={adminAuth ? <Service/> : <Navigate to='/admin/login' />  }/>
+        <Route path="/services" element={adminAuth ? <AdminService/> : <Navigate to='/admin/login' />  }/>
         <Route path="/users" element={adminAuth ? <User/> : <Navigate to='/admin/login' />  }/>
         <Route path="/providers" element={adminAuth ? <Provider/> : <Navigate to='/admin/login' />  }/>
         <Route path="/" element={adminAuth ? <HomePage/> : <Navigate to='/admin/login' />  }/> 
