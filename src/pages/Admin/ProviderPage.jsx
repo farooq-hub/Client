@@ -1,7 +1,7 @@
 import Sidebar from "../../Components/Admin/Sidebar";
 import ProviderList from "../../Components/Admin/ProviderList";
 
-const Provider = () => {
+const ProviderPage = () => {
     return (
         <div className='bg-gray-100 h-full min-h-screen min-w-screen font-sans overflow-hidden'>
             <Sidebar />
@@ -14,4 +14,4 @@ const Provider = () => {
     )
 }
 
-export default Provider;
+export default ProviderPage;
