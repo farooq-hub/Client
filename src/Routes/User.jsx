@@ -1,6 +1,5 @@
 import { Routes, Route,Navigate} from "react-router-dom";
 import { useSelector } from "react-redux";
-import ProfilePage from "../Pages/User/ProfilePage";
 import ProvidersPage from "../Pages/User/ProviderPage";
 import HomePage from "../Pages/User/HomePage";
 import PyamentPage from "../Pages/User/PyamentPage";

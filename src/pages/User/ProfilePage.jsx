@@ -21,15 +21,9 @@ function ProfilePage() {
   return (
     <div className='h-screen'>
       <Sidebar />
-
       <div className="flex md:ml-64 lg:ml-64">
         <Profile/>
       </div>
-
-      {/* <div className=" bg-gray-200 shadow-sm p-4">
-        <h1 className="text-xl font-serif text-center text-gray-800 capitalize lg:text-2xl">ORDERS</h1>
-      </div> */}
-
     </div>
   )
 }
