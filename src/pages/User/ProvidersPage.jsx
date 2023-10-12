@@ -1,4 +1,3 @@
-import React from 'react'
 import Sidebar from '../../Components/User/Sidebar'
 import Providers from '../../Components/User/Providers'
 

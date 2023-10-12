@@ -2,7 +2,7 @@
 import { Routes, Route,Navigate} from "react-router-dom";
 import { useSelector } from "react-redux";
 import ProfilePage from "../Pages/User/Profile";
-import ProvidersPage from "../Pages/User/Providers";
+import ProvidersPage from "../Pages/User/ProvidersPage";
 import HomePage from "../Pages/User/HomePage";
 import CheckoutPage from "../Pages/User/CheckOut";
 import PyamentPage from "../Pages/User/PyamentPage";
