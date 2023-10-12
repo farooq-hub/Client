@@ -8,14 +8,12 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {  toast } from 'react-toastify';
 import PropTypes from 'prop-types';
-import OtpInput from 'otp-input-react'
+import OTPInput from 'otp-input-react'
 import { usersPost } from "../Services/userApi";
 import { providerPost } from "../Services/providerApi";
 
 
-OtpLogin.propTypes = {
-    role: PropTypes.string.isRequired, // Define the expected type and mark it as required
-  };
+
 
 function OtpLogin({role}) {
 
@@ -169,7 +167,7 @@ function OtpLogin({role}) {
                             <input className="pl-2 outline-none border-none h-8 bg-slate-100" type="tel" name="phone"  placeholder="Mobile Number" onChange={handleChange}/>
                         </div>:
                         <div className="border-2 w-80 h-16 mb-4">
-                                <OtpInput
+                                <OTPInput
                                 className='m-3'
                                 OTPLength={6}
                                 value={otp}
@@ -208,6 +206,10 @@ function OtpLogin({role}) {
     </div>
   );
 }
+
+OtpLogin.propTypes = {
+    role: PropTypes.string.isRequired, // Define the expected type and mark it as required
+  };
 
 
 export default OtpLogin
