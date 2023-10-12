@@ -8,7 +8,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {  toast } from 'react-toastify';
 import PropTypes from 'prop-types';
-import OTPInput from 'otp-input-react'
+import OtpInput from 'otp-input-react'
 import { usersPost } from "../Services/userApi";
 import { providerPost } from "../Services/providerApi";
 
@@ -167,7 +167,7 @@ function OtpLogin({role}) {
                             <input className="pl-2 outline-none border-none h-8 bg-slate-100" type="tel" name="phone"  placeholder="Mobile Number" onChange={handleChange}/>
                         </div>:
                         <div className="border-2 w-80 h-16 mb-4">
-                                <OTPInput
+                                <OtpInput
                                 className='m-3'
                                 OTPLength={6}
                                 value={otp}
