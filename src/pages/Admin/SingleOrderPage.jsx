@@ -1,8 +1,6 @@
 import SingleOrder from '../../Components/SingleOrder'
 import Sidebar from '../../Components/Admin/Sidebar'
 
-
-
 const SingleOrderPage = () => {
   return (
     <div className='bg-gray-100 h-screen'>
