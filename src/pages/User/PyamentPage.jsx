@@ -1,5 +1,4 @@
 import Sidebar from '../../Components/User/Sidebar'
-import Providers from '../../Components/User/Providers'
 import Payment from '../../Components/User/Payment'
 
 function PyamentPage() {
