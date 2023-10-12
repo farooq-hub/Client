@@ -2,7 +2,6 @@ import Checkout from "../../Components/User/CheckoutPage";
 import Sidebar from "../../Components/User/Sidebar";
 
 const CheckoutPage = () => {
-  console.log('skjfgkjsgkjg');
     return (
 
         <div className=''>
