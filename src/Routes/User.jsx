@@ -1,7 +1,5 @@
-// import React from 'react'
 import { Routes, Route,Navigate} from "react-router-dom";
 import { useSelector } from "react-redux";
-import Login from "../Components/Login";
 import OtpLogin from "../Components/OtpLogin";
 import ProfilePage from "../Pages/User/ProfilePage";
 import ProvidersPage from "../Pages/User/ProviderPage";
@@ -13,6 +11,7 @@ import CheckoutPage from "../Pages/User/CheckoutPage";
 import SingleOrderPage from "../Pages/User/SingleOrderPage";
 import SingleProviderPage from "../Pages/User/SingleProviderPage";
 import Register from "../Components/User/Register";
+import Login from "../Components/Login";
 
 
 
