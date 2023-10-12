@@ -1,6 +1,6 @@
 // import React from 'react'
 import { Routes, Route,Navigate} from "react-router-dom";
-import BaseLogin from "../Components/BaseLogin"
+import Login from "../Components/Login"
 import Register from "../Components/User/Register"
 import { useSelector } from "react-redux";
 import OtpLogin from "../Components/OtpLogin";
@@ -30,7 +30,7 @@ const User = () => {
         <Route path="/providers" element={userAuth ? <ProvidersPage/> : <Navigate to='/login' /> }/>
         <Route path="/providers/checkout" element={userAuth ? <CheckoutPage/> : <Navigate to='/login' /> }/>
         <Route path="/otpLogin" element={userAuth ? <Navigate to='/' /> : <OtpLogin role='user'/> }/>
-        <Route path="/login" element={userAuth ? <Navigate to='/' /> : <BaseLogin role='user'/> }/>
+        <Route path="/login" element={userAuth ? <Navigate to='/' /> : <Login role='user'/> }/>
         <Route path="/register"  element={userAuth ? <Navigate to='/' /> : <Register />}/>
         <Route path="/" element={userAuth ? <HomePage/> :<Navigate to='/login'/>}/>
 
