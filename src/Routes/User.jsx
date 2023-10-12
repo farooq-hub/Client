@@ -11,6 +11,7 @@ import SingleProviderPage from "../Pages/User/SingleProviderPage";
 import Register from "../Components/User/Register";
 import Login from "../Components/Login";
 import OtpLogin from "../Components/OtpLogin";
+import ProfilePage from "../Pages/User/ProfilePage";
 
 
 

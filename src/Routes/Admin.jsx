@@ -1,12 +1,12 @@
 import { Routes, Route,Navigate} from "react-router-dom";
 import { useSelector } from "react-redux";
 import Login from "../Components/Login";
-import UsersPage from "../Pages/Admin/UsersPage";
 import SingleOrderPage from "../Pages/Admin/SingleOrderPage";
 import HomePage from "../Pages/Admin/HomePage";
 import Service from "../Pages/Admin/Service";
 import ProviderPage from "../Pages/Admin/ProviderPage";
 import OrderPage from "../Pages/Admin/OrderPage";
+import UsersPage from "../Pages/Admin/UsersPage";
 
 
 const Admin = () => {
