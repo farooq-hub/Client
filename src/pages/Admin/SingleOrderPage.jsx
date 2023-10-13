@@ -7,7 +7,11 @@ const SingleOrderPage = () => {
         <Sidebar/>
 
     <div className="flex md:ml-64 lg:ml-64">
+
+
+      
       <SingleOrder role='admin'/>
+
     </div>
   </div>
   )
